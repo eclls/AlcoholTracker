@@ -1,4 +1,6 @@
-import { estimateBAC, legalLimitGL } from './bac.js';
+import { estimateBAC, ethanolGrams, legalLimitGL } from './bac.js';
+
+const BAC_RING_C = 2 * Math.PI * 132;
 
 const STORAGE_KEY = 'alcool-tracker-v1';
 
@@ -66,6 +68,47 @@ document.querySelectorAll('nav.dock button[data-tab]').forEach((btn) => {
   btn.addEventListener('click', () => setTab(btn.dataset.tab));
 });
 
+document.querySelectorAll('[data-go-tab]').forEach((node) => {
+  node.addEventListener('click', () => setTab(node.getAttribute('data-go-tab')));
+});
+
+function syncDurationLabel() {
+  const d = el('duration');
+  const lab = el('duration-label');
+  if (d && lab) lab.textContent = String(d.value);
+}
+
+const dur = el('duration');
+if (dur) {
+  dur.addEventListener('input', syncDurationLabel);
+  syncDurationLabel();
+}
+
+function highlightBeverageCat() {
+  const v = el('beverage').value;
+  document.querySelectorAll('.beverage-cat').forEach((btn) => {
+    btn.classList.toggle('is-selected', btn.getAttribute('data-beverage') === v);
+  });
+}
+
+document.querySelectorAll('.beverage-cat').forEach((btn) => {
+  btn.addEventListener('click', () => {
+    el('beverage').value = btn.getAttribute('data-beverage');
+    highlightBeverageCat();
+  });
+});
+
+el('beverage').addEventListener('change', highlightBeverageCat);
+
+const btnWater = el('btn-dash-water');
+if (btnWater) {
+  btnWater.addEventListener('click', () => showToast('Pensez à boire un grand verre d’eau.'));
+}
+const btnWaterDismiss = el('btn-dash-water-dismiss');
+if (btnWaterDismiss) {
+  btnWaterDismiss.addEventListener('click', () => showToast('Rappel hydratation reporté.'));
+}
+
 function profileToForm() {
   el('sex').value = state.profile.sex;
   el('weight').value = state.profile.weightKg;
@@ -108,6 +151,88 @@ el('btn-save-blocks').addEventListener('click', () => {
   showToast('Liste enregistrée.');
 });
 
+function todayIso() {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
+
+function drinksToday() {
+  const t = todayIso();
+  return state.drinks.filter((d) => d.at.slice(0, 10) === t);
+}
+
+function totalAlcoholKcal(drinks) {
+  let g = 0;
+  for (const d of drinks) {
+    g += ethanolGrams(Number(d.volumeMl) || 0, Number(d.abv) || 0);
+  }
+  return Math.round(g * 7);
+}
+
+function renderDashTimeline() {
+  const box = el('dash-timeline');
+  if (!box) return;
+  const list = drinksToday().sort((a, b) => new Date(a.at) - new Date(b.at));
+  const icon = (b) =>
+    ({ beer: 'sports_bar', wine: 'wine_bar', spirits: 'liquor', cocktail: 'local_bar', other: 'liquor' }[b] || 'local_bar');
+
+  const cards = list
+    .map((d) => {
+      const time = new Date(d.at).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+      const title = escapeHtml(d.label || d.beverage);
+      return `<div class="glass-card flex w-40 shrink-0 flex-col rounded-lg border border-outline-variant/10 p-4">
+        <span class="mb-2 block text-[10px] font-bold uppercase text-on-surface-variant">${time}</span>
+        <div class="mb-2 flex h-12 w-12 items-center justify-center rounded-lg bg-surface-container-high">
+          <span class="material-symbols-outlined text-primary-fixed-dim">${icon(d.beverage)}</span>
+        </div>
+        <h4 class="text-sm font-bold text-on-surface">${title}</h4>
+        <p class="text-[11px] text-on-surface-variant">${d.volumeMl} ml · ${d.abv}%</p>
+      </div>`;
+    })
+    .join('');
+
+  const addCard = `<button type="button" class="flex w-40 shrink-0 flex-col items-center justify-center rounded-lg border-2 border-dashed border-outline-variant/25 p-4 text-on-surface-variant transition-colors hover:border-primary/40 hover:text-primary" data-go-tab="log">
+    <span class="material-symbols-outlined">add</span>
+    <span class="mt-2 text-[10px] font-bold uppercase">Ajouter</span>
+  </button>`;
+
+  box.innerHTML = (cards || '') + addCard;
+  box.querySelectorAll('[data-go-tab]').forEach((b) => {
+    b.addEventListener('click', () => setTab(b.getAttribute('data-go-tab')));
+  });
+}
+
+function setDashSafeUI(bac, legal, drunk) {
+  const badge = el('dash-safe-badge');
+  const icon = el('dash-safe-icon');
+  const label = el('dash-safe-label');
+  if (!badge || !icon || !label) return;
+
+  badge.className =
+    'safe-glow inline-flex items-center gap-2 rounded-full border px-6 py-3 transition-colors duration-200';
+  icon.style.fontVariationSettings = "'FILL' 1";
+
+  if (bac >= drunk) {
+    badge.classList.add('border-error/30', 'bg-error-container/25');
+    icon.className = 'material-symbols-outlined text-[22px] text-error';
+    icon.textContent = 'gpp_bad';
+    label.className = 'font-label text-xs font-bold uppercase tracking-widest text-error';
+    label.textContent = 'Mode sécurité recommandé';
+  } else if (bac >= legal) {
+    badge.classList.add('border-tertiary/25', 'bg-tertiary-container/25');
+    icon.className = 'material-symbols-outlined text-[22px] text-tertiary';
+    icon.textContent = 'warning';
+    label.className = 'font-label text-xs font-bold uppercase tracking-widest text-tertiary';
+    label.textContent = 'Au-dessus du seuil';
+  } else {
+    badge.classList.add('border-secondary/15', 'bg-secondary-container/20');
+    icon.className = 'material-symbols-outlined text-[22px] text-secondary';
+    icon.textContent = 'check_circle';
+    label.className = 'font-label text-xs font-bold uppercase tracking-widest text-secondary';
+    label.textContent = 'Sous le seuil d’alerte';
+  }
+}
+
 function refreshDash() {
   const res = estimateBAC(state.profile, state.drinks);
   const bac = res.bacGL;
@@ -117,12 +242,48 @@ function refreshDash() {
   if (bac >= state.thresholds.legal) val.classList.add('warn');
   if (bac >= state.thresholds.drunk) val.classList.add('danger');
 
+  const ring = el('bac-ring');
+  if (ring) {
+    const pct = Math.min(1, bac / 1.2);
+    ring.setAttribute('stroke-dashoffset', String(BAC_RING_C * (1 - pct)));
+  }
+
+  setDashSafeUI(bac, state.thresholds.legal, state.thresholds.drunk);
+
+  const beta = Math.max(0.08, Math.min(0.22, Number(state.profile.betaGlH) || 0.14));
+  const sober = el('dash-sober-text');
+  if (sober) {
+    if (bac <= 0) {
+      sober.textContent = 'Aucune estimation active. Enregistrez une consommation pour lancer le suivi.';
+    } else {
+      const h = bac / beta;
+      const eta = new Date(Date.now() + h * 3600000);
+      sober.textContent = `Élimination théorique ~${h.toFixed(1).replace('.', ',')} h — vers ${eta.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })} (ordre de grandeur).`;
+    }
+  }
+
+  const kcalEl = el('dash-kcal');
+  if (kcalEl) kcalEl.textContent = String(totalAlcoholKcal(drinksToday()));
+
+  const hyd = el('dash-hydration-pct');
+  if (hyd) {
+    const n = drinksToday().length;
+    hyd.textContent = n ? String(Math.min(95, 45 + n * 8)) : '—';
+  }
+
   el('meta-peak').textContent = `Pic ≈ ${res.peakEstimateGL.toFixed(2).replace('.', ',')} g/L`;
   el('meta-since').innerHTML =
     res.hoursSinceFirst > 0
       ? `Δt ${res.hoursSinceFirst.toFixed(1).replace('.', ',')} h`
       : '—';
   el('bac-disclaimer').textContent = res.disclaimer;
+
+  const impactBac = el('impact-bac');
+  if (impactBac) impactBac.textContent = `${bac.toFixed(2).replace('.', ',')} g/L`;
+  const impactBar = el('impact-bar');
+  if (impactBar) impactBar.style.width = `${Math.min(100, (bac / 1.2) * 100)}%`;
+
+  renderDashTimeline();
 
   drunkModeCheck(bac);
   notifyCheck(bac);
@@ -167,7 +328,7 @@ function notifyCheck(bac) {
   if (bac >= legal && now - state.lastNotifiedLegal > 5 * 60 * 1000) {
     state.lastNotifiedLegal = now;
     saveState(state);
-    new Notification('Alcool Tracker', {
+    new Notification('Aura', {
       body: `Estimation ≥ ${legal} g/L — évitez de conduire.`,
       tag: 'legal'
     });
@@ -420,6 +581,7 @@ if ('serviceWorker' in navigator) {
 }
 
 profileToForm();
+highlightBeverageCat();
 refreshDash();
 renderCalendar();
 

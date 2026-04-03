@@ -1,58 +1,99 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html class="dark" lang="fr">
   <head>
     <meta charset="utf-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1"
-    />
-    <meta name="theme-color" content="#0a0d0f" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#131313" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    <title>Alcool Tracker</title>
+    <title>Aura · Alcool Tracker</title>
     <link rel="manifest" href="manifest.json" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            colors: {
+              'secondary-fixed': '#84f5e8',
+              primary: '#bac3ff',
+              'on-error-container': '#ffdad6',
+              'secondary-fixed-dim': '#66d9cc',
+              'on-primary-container': '#7e90f8',
+              'on-surface-variant': '#c6c5d4',
+              'on-primary': '#08218a',
+              'surface-dim': '#131313',
+              'surface-bright': '#393939',
+              'primary-fixed-dim': '#bac3ff',
+              'on-secondary-fixed': '#00201d',
+              'tertiary-fixed-dim': '#ffb59f',
+              'on-background': '#e5e2e1',
+              'surface-container-high': '#2a2a2a',
+              'on-tertiary': '#5e1600',
+              'surface-container-lowest': '#0e0e0e',
+              'surface-container': '#201f1f',
+              'outline-variant': '#454652',
+              'inverse-on-surface': '#313030',
+              'primary-container': '#072189',
+              background: '#131313',
+              'surface-variant': '#353534',
+              'on-error': '#690005',
+              'on-secondary-fixed-variant': '#005049',
+              'tertiary-fixed': '#ffdbd0',
+              'on-primary-fixed-variant': '#293ca0',
+              'on-tertiary-fixed-variant': '#852300',
+              'tertiary-container': '#5d1600',
+              'surface-tint': '#bac3ff',
+              'on-tertiary-container': '#f96b3f',
+              surface: '#131313',
+              'on-tertiary-fixed': '#3a0a00',
+              'on-surface': '#e5e2e1',
+              error: '#ffb4ab',
+              'inverse-primary': '#4355b9',
+              'on-secondary-container': '#00302b',
+              secondary: '#66d9cc',
+              'primary-fixed': '#dee0ff',
+              'error-container': '#93000a',
+              'surface-container-highest': '#353534',
+              'secondary-container': '#1ea296',
+              outline: '#908f9d',
+              tertiary: '#ffb59f',
+              'inverse-surface': '#e5e2e1',
+              'on-secondary': '#003732',
+              'on-primary-fixed': '#00105c',
+              'surface-container-low': '#1c1b1b'
+            },
+            borderRadius: {
+              DEFAULT: '1rem',
+              lg: '2rem',
+              xl: '3rem',
+              full: '9999px'
+            },
+            fontFamily: {
+              headline: ['Manrope', 'system-ui', 'sans-serif'],
+              body: ['Plus Jakarta Sans', 'system-ui', 'sans-serif'],
+              label: ['Plus Jakarta Sans', 'system-ui', 'sans-serif']
+            }
+          }
+        }
+      };
+    </script>
     <link rel="stylesheet" href="css/app.css" />
     <link rel="apple-touch-icon" href="icons/icon-192.png" />
   </head>
-  <body>
+  <body class="bg-background text-on-surface font-body selection:bg-primary/30 selection:text-on-primary min-h-[max(884px,100dvh)]">
     <svg xmlns="http://www.w3.org/2000/svg" class="svg-defs" aria-hidden="true" focusable="false">
       <defs>
-        <symbol id="sym-home" viewBox="0 0 24 24" fill="none">
-          <path
-            stroke="currentColor"
-            stroke-width="1.5"
-            stroke-linejoin="round"
-            d="M4 10.5 12 4l8 6.5V20a1 1 0 0 1-1 1h-5v-6H10v6H5a1 1 0 0 1-1-1v-9.5z"
-          />
-        </symbol>
-        <symbol id="sym-add" viewBox="0 0 24 24" fill="none">
-          <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.5" />
-          <path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" d="M12 8v8M8 12h8" />
-        </symbol>
-        <symbol id="sym-cal" viewBox="0 0 24 24" fill="none">
-          <rect x="3" y="5" width="18" height="16" rx="2" stroke="currentColor" stroke-width="1.5" />
-          <path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" d="M3 10h18M8 3v4M16 3v4" />
-          <path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01" />
-        </symbol>
-        <symbol id="sym-user" viewBox="0 0 24 24" fill="none">
-          <circle cx="12" cy="8" r="3.5" stroke="currentColor" stroke-width="1.5" />
-          <path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" d="M5 20v-1a7 7 0 0 1 14 0v1" />
-        </symbol>
-        <symbol id="sym-lab" viewBox="0 0 24 24" fill="none">
-          <path
-            stroke="currentColor"
-            stroke-width="1.5"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            d="M9 3h6M10 3v5.2L6 18a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2l-4-9.8V3M9 14h6"
-          />
-        </symbol>
         <symbol id="sym-chev-l" viewBox="0 0 24 24" fill="none">
           <path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M14 6l-6 6 6 6" />
         </symbol>
@@ -62,274 +103,721 @@
       </defs>
     </svg>
 
-    <div class="app-shell">
-      <header class="app-header">
-        <div class="app-header__mark" aria-hidden="true">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M12 3v18M8 7c0-2 2-3 4-3s4 1 4 3v10c0 2-2 3-4 3s-4-1-4-3V7z"
-            />
-          </svg>
+    <header
+      class="fixed top-0 z-50 flex w-full items-center justify-between bg-neutral-950/60 px-6 py-4 backdrop-blur-xl"
+    >
+      <div class="flex items-center gap-3">
+        <div
+          class="h-10 w-10 overflow-hidden rounded-full border border-outline-variant/20 bg-primary-container"
+          aria-hidden="true"
+        >
+          <img
+            class="h-full w-full object-cover opacity-90"
+            src="https://lh3.googleusercontent.com/aida-public/AB6AXuB7yA0K6ki7R-dUQWJnYrsBZU3qk3WA8H7I6ZD0C6WkFepOI15crqfSD-t9JptLYhOqvUUxHYfN_n2-aAe9Ek3DicLRH9YB1sjCXA_ppLTZu8Wk-YC_O1d4XrL5FN-w8Qu5T53sNNiSTIaTCHgF-43cxPb7UU_BJCFwmw39TkHO93fC-b-T__2b_NX_ITHJ_Nv4IZTN6gC0alaqN4vBLaPiT1y4aX6mY1z-IQbthv5OHUeqPGAhyHq9LettHcmafGVKwLKsF2NODpo"
+            alt=""
+          />
         </div>
-        <h1>Alcool Tracker</h1>
-        <p class="tagline">Estimation · suivi</p>
-      </header>
+        <span class="font-headline text-lg font-extrabold tracking-tighter text-indigo-200">Aura</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <button
+          type="button"
+          id="btn-notif"
+          class="rounded-full p-2 text-neutral-400 transition-colors hover:text-on-surface"
+          aria-label="Activer les notifications"
+        >
+          <span class="material-symbols-outlined text-[22px]">notifications</span>
+        </button>
+      </div>
+    </header>
 
-      <main>
-        <section id="panel-dash" class="panel active" role="tabpanel" aria-labelledby="tab-dash">
-          <div class="card card--hero bac-display">
-            <div id="bac-value" class="bac-value">0,00</div>
-            <div class="bac-unit">g/L</div>
-            <div class="meta-row">
-              <span id="meta-peak">Pic —</span>
-              <span id="meta-since">Δt —</span>
+    <main class="mx-auto max-w-2xl px-6 pb-36 pt-24">
+      <!-- Tableau de bord -->
+      <section id="panel-dash" class="panel active aurora-glow" role="tabpanel" aria-labelledby="tab-dash">
+        <div class="flex flex-col items-center justify-center py-8">
+          <div class="relative flex h-72 w-72 items-center justify-center">
+            <div class="absolute inset-0 rounded-full border-[12px] border-surface-container-high/30 opacity-40"></div>
+            <svg class="absolute inset-0 h-full w-full -rotate-90" viewBox="0 0 288 288" aria-hidden="true">
+              <circle
+                class="text-surface-container-highest"
+                cx="144"
+                cy="144"
+                fill="transparent"
+                r="132"
+                stroke="currentColor"
+                stroke-width="12"
+              />
+              <circle
+                id="bac-ring"
+                class="text-secondary-fixed-dim drop-shadow-[0_0_12px_rgba(102,217,204,0.35)]"
+                cx="144"
+                cy="144"
+                fill="transparent"
+                r="132"
+                stroke="currentColor"
+                stroke-dasharray="829.38"
+                stroke-dashoffset="829.38"
+                stroke-linecap="round"
+                stroke-width="12"
+              />
+            </svg>
+            <div class="z-10 text-center">
+              <span id="bac-value" class="block font-headline text-6xl font-extrabold tracking-tight text-on-surface">0,00</span>
+              <span class="mt-1 block font-label text-sm uppercase tracking-[0.2em] text-on-surface-variant">g/L BAC</span>
             </div>
-            <details class="glitch">
-              <summary>méthode &amp; limite</summary>
-              <p id="bac-disclaimer" class="glitch__body"></p>
-            </details>
           </div>
-
-          <div class="card">
-            <h2 class="card__title">Alertes</h2>
-            <label for="threshold-legal">Seuil alerte (g/L)</label>
-            <input type="number" id="threshold-legal" min="0.1" max="2" step="0.05" value="0.5" />
-            <button type="button" class="primary" id="btn-notif">Notifications</button>
-            <details class="glitch">
-              <summary>statut &amp; iOS</summary>
-              <p id="notif-status" class="glitch__body"></p>
-            </details>
-          </div>
-
-          <div class="card">
-            <h2 class="card__title">Mode sécurité</h2>
-            <label for="threshold-drunk">Seuil écran plein (g/L)</label>
-            <input type="number" id="threshold-drunk" min="0.2" max="3" step="0.05" value="0.8" />
-            <details class="glitch">
-              <summary>contraintes système</summary>
-              <p class="glitch__body">
-                Au-delà du seuil, écran avec appels, Plans et Uber. Une page web ne modifie pas le Dock iOS ni ne bloque
-                apps/contacts — utilisez Temps d’écran / Concentration sur l’appareil.
-              </p>
-            </details>
-          </div>
-        </section>
-
-        <section id="panel-log" class="panel" role="tabpanel" aria-labelledby="tab-log">
-          <div class="card">
-            <h2 class="card__title">Saisie</h2>
-            <label for="drink-label">Référence</label>
-            <input type="text" id="drink-label" placeholder="ex. blonde 25cl" autocomplete="off" />
-
-            <div class="row2">
-              <div>
-                <label for="volume">ml</label>
-                <input type="number" id="volume" min="1" max="2000" value="250" />
-              </div>
-              <div>
-                <label for="abv">% vol.</label>
-                <input type="number" id="abv" min="0" max="100" step="0.1" value="5" />
-              </div>
+          <div id="dash-safe-wrap" class="mt-10 text-center">
+            <div
+              id="dash-safe-badge"
+              class="safe-glow inline-flex items-center gap-2 rounded-full border border-secondary/15 bg-secondary-container/20 px-6 py-3"
+            >
+              <span id="dash-safe-icon" class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1"
+                >check_circle</span
+              >
+              <span id="dash-safe-label" class="font-label text-xs font-bold uppercase tracking-widest text-secondary"
+                >Autorisé à conduire</span
+              >
             </div>
-
-            <label for="beverage">Type</label>
-            <select id="beverage">
-              <option value="beer">Bière</option>
-              <option value="wine">Vin</option>
-              <option value="spirits">Spiritueux</option>
-              <option value="cocktail">Cocktail</option>
-              <option value="other">Autre</option>
-            </select>
-
-            <label for="at-time">Début</label>
-            <input type="datetime-local" id="at-time" />
-
-            <label for="duration">Durée (min)</label>
-            <input type="number" id="duration" min="5" max="480" value="30" />
-
-            <div class="row2">
-              <div>
-                <label for="food">Repas</label>
-                <select id="food">
-                  <option value="yes">Oui</option>
-                  <option value="no" selected>Non</option>
-                </select>
-              </div>
-              <div>
-                <label for="activity">Sport avant</label>
-                <select id="activity">
-                  <option value="yes">Oui</option>
-                  <option value="no" selected>Non</option>
-                </select>
-              </div>
-            </div>
-
-            <label for="notes">Notes</label>
-            <textarea id="notes" placeholder="fatigue, médicaments…"></textarea>
-
-            <label for="photo">Photo étiquette</label>
-            <input type="file" id="photo" accept="image/*" capture="environment" />
-
-            <button type="button" class="primary" id="btn-save-drink">Enregistrer</button>
-            <details class="glitch">
-              <summary>modèle cinétique</summary>
-              <p class="glitch__body">
-                Type de boisson et repas influencent l’absorption (ex. Mitchell et al., 2014). Valeur affichée = estimation,
-                pas mesure biologique.
-              </p>
-            </details>
-          </div>
-        </section>
-
-        <section id="panel-cal" class="panel" role="tabpanel" aria-labelledby="tab-cal">
-          <div class="card">
-            <h2 class="card__title">Calendrier</h2>
-            <div class="cal-nav">
-              <button type="button" id="cal-prev" aria-label="Mois précédent">
-                <svg class="dock__glyph"><use href="#sym-chev-l" /></svg>
-              </button>
-              <p id="cal-title"></p>
-              <button type="button" id="cal-next" aria-label="Mois suivant">
-                <svg class="dock__glyph"><use href="#sym-chev-r" /></svg>
-              </button>
-            </div>
-            <div class="calendar" id="cal-head"></div>
-            <div class="calendar" id="cal-grid"></div>
-          </div>
-          <div class="card">
-            <h2 class="card__title">Jour</h2>
-            <div id="cal-day-detail"></div>
-          </div>
-          <div class="card">
-            <h2 class="card__title">Liste prudence</h2>
-            <label for="block-list">À éviter</label>
-            <textarea id="block-list" placeholder="une entrée par ligne"></textarea>
-            <button type="button" class="secondary" id="btn-save-blocks">Enregistrer</button>
-            <details class="glitch">
-              <summary>à propos du blocage</summary>
-              <p class="glitch__body">Le navigateur ne bloque pas apps ou contacts — liste mémorisée pour rappels dans l’app.</p>
-            </details>
-          </div>
-        </section>
-
-        <section id="panel-prof" class="panel" role="tabpanel" aria-labelledby="tab-prof">
-          <div class="card">
-            <h2 class="card__title">Corps</h2>
-            <label for="sex">Sexe</label>
-            <select id="sex">
-              <option value="male">Homme</option>
-              <option value="female">Femme</option>
-              <option value="other">Autre</option>
-            </select>
-            <div class="row2">
-              <div>
-                <label for="weight">Poids kg</label>
-                <input type="number" id="weight" min="35" max="200" value="75" />
-              </div>
-              <div>
-                <label for="height">Taille cm</label>
-                <input type="number" id="height" min="120" max="220" value="175" />
-              </div>
-            </div>
-            <label for="beta">β élimination (g/L/h)</label>
-            <input type="number" id="beta" min="0.08" max="0.22" step="0.01" value="0.14" />
-            <button type="button" class="secondary" id="btn-export">Export JSON</button>
-            <details class="glitch">
-              <summary>Santé &amp; calendrier</summary>
-              <p class="glitch__body">
-                HealthKit et calendrier natifs ne sont pas exposés aux PWA. Export JSON pour réutilisation ailleurs.
-              </p>
-            </details>
-          </div>
-
-          <div class="card">
-            <h2 class="card__title">Eau</h2>
-            <label class="checkbox-row">
-              <input type="checkbox" id="water-daily" />
-              Rappel quotidien
-            </label>
-            <label for="water-time">Heure</label>
-            <input type="time" id="water-time" value="12:00" />
-            <label class="checkbox-row">
-              <input type="checkbox" id="water-session" />
-              Pendant la session (45 min)
-            </label>
-            <details class="glitch">
-              <summary>OMS — contexte</summary>
-              <p class="glitch__body">
-                Besoins hydriques variables (climat, activité). L’eau n’« annule » pas l’effet de l’alcool sur l’organisme.
-              </p>
-            </details>
-          </div>
-        </section>
-
-        <section id="panel-src" class="panel" role="tabpanel" aria-labelledby="tab-src">
-          <div class="card sources">
-            <h2 class="card__title">Références</h2>
-            <p class="disclaimer" style="margin: 0 0 0.75rem; font-size: 0.82rem">
-              Absorption et pic BAC : type de boisson, jeûne, vidange gastrique (Mitchell et al., 2014).
+            <p id="dash-sober-text" class="mx-auto mt-4 max-w-xs text-sm text-on-surface-variant">
+              Métabolisation en cours. Estimation d’élimination ci-dessous.
             </p>
-            <details class="glitch">
-              <summary>liens &amp; études</summary>
-              <div class="glitch__body">
-                <ul class="link-list">
-                  <li>
-                    <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC4112772/" target="_blank" rel="noopener"
-                      >PMC4112772</a
-                    >
-                  </li>
-                  <li>
-                    <a
-                      href="https://pmc.ncbi.nlm.nih.gov/articles/PMC4112772/table/acer12355-tbl-0001/?report=objectonly"
-                      target="_blank"
-                      rel="noopener"
-                      >Table PMC</a
-                    >
-                  </li>
-                  <li><a href="https://doi.org/10.1111/acer.12355" target="_blank" rel="noopener">DOI 10.1111/acer.12355</a></li>
-                </ul>
+          </div>
+          <p class="mt-3 flex flex-wrap justify-center gap-2 text-center text-xs text-on-surface-variant">
+            <span id="meta-peak" class="rounded-full border border-outline-variant/20 bg-surface-container-lowest/80 px-3 py-1 font-medium"
+              >Pic —</span
+            >
+            <span id="meta-since" class="rounded-full border border-outline-variant/20 bg-surface-container-lowest/80 px-3 py-1 font-medium"
+              >Δt —</span
+            >
+          </p>
+          <details class="glitch mt-6 w-full max-w-md text-left">
+            <summary>Méthode &amp; limite</summary>
+            <p id="bac-disclaimer" class="glitch__body"></p>
+          </details>
+        </div>
+
+        <div class="mt-6 grid grid-cols-2 gap-4">
+          <div class="glass-card group relative col-span-2 overflow-hidden rounded-xl p-6">
+            <div class="absolute -right-4 -top-4 h-24 w-24 rounded-full bg-primary/5 blur-2xl transition-colors group-hover:bg-primary/10"></div>
+            <div class="flex items-start justify-between gap-4">
+              <div>
+                <h3 class="font-headline text-lg font-bold text-primary">Conseil suivant</h3>
+                <p class="mt-1 text-sm leading-relaxed text-on-surface-variant">
+                  Un grand verre d’eau aide à l’hydratation pendant une sortie.
+                </p>
               </div>
-            </details>
+              <div class="rounded-lg bg-primary-container/30 p-3">
+                <span class="material-symbols-outlined text-primary">water_drop</span>
+              </div>
+            </div>
+            <div class="mt-6 flex gap-2">
+              <button
+                type="button"
+                id="btn-dash-water"
+                class="flex-1 rounded-lg bg-primary py-3 text-sm font-bold text-on-primary transition-all hover:opacity-90 active:scale-95"
+              >
+                Rappel eau
+              </button>
+              <button
+                type="button"
+                id="btn-dash-water-dismiss"
+                class="flex-1 rounded-lg border border-outline-variant/10 bg-surface-container-highest py-3 text-sm font-bold text-on-surface"
+              >
+                Plus tard
+              </button>
+            </div>
+          </div>
+
+          <div class="glass-card flex h-40 flex-col justify-between rounded-xl p-5">
+            <div class="flex items-center justify-between">
+              <span class="material-symbols-outlined text-secondary-fixed-dim">opacity</span>
+              <span class="text-[10px] font-bold uppercase tracking-tighter text-on-surface-variant">Hydratation</span>
+            </div>
+            <div>
+              <span id="dash-hydration-pct" class="block font-headline text-2xl font-bold text-on-surface">—</span>
+              <p class="text-[10px] text-on-surface-variant">Indicatif (non mesuré)</p>
+            </div>
+          </div>
+
+          <div class="glass-card flex h-40 flex-col justify-between rounded-xl p-5">
+            <div class="flex items-center justify-between">
+              <span class="material-symbols-outlined text-tertiary">bolt</span>
+              <span class="text-[10px] font-bold uppercase tracking-tighter text-on-surface-variant">Calories</span>
+            </div>
+            <div>
+              <span id="dash-kcal" class="block font-headline text-2xl font-bold text-on-surface">0</span>
+              <span class="text-[10px] font-medium text-tertiary-fixed-dim">kcal alcool (estim.)</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-8">
+          <div class="mb-4 flex items-center justify-between px-1">
+            <h2 class="font-headline text-xl font-bold text-on-surface">Aujourd’hui</h2>
+            <button
+              type="button"
+              class="text-xs font-bold uppercase tracking-widest text-primary"
+              data-go-tab="cal"
+            >
+              Historique
+            </button>
+          </div>
+          <div id="dash-timeline" class="no-scrollbar -mx-6 flex gap-4 overflow-x-auto px-6 pb-2"></div>
+        </div>
+
+        <div class="mt-8 space-y-4 rounded-xl border border-outline-variant/10 bg-surface-container-low p-6">
+          <h3 class="font-headline text-lg font-bold">Seuils &amp; alertes</h3>
+          <div>
+            <label for="threshold-legal" class="block text-xs font-medium uppercase tracking-wider text-on-surface-variant"
+              >Seuil alerte (g/L)</label
+            >
+            <input
+              type="number"
+              id="threshold-legal"
+              min="0.1"
+              max="2"
+              step="0.05"
+              value="0.5"
+              class="mt-2 w-full rounded-lg border-0 bg-surface-container-high py-3 text-on-surface ring-1 ring-outline-variant/20 focus:ring-2 focus:ring-primary/30"
+            />
+          </div>
+          <p id="notif-status" class="text-xs text-on-surface-variant"></p>
+          <div>
+            <label for="threshold-drunk" class="block text-xs font-medium uppercase tracking-wider text-on-surface-variant"
+              >Mode sécurité plein écran (g/L)</label
+            >
+            <input
+              type="number"
+              id="threshold-drunk"
+              min="0.2"
+              max="3"
+              step="0.05"
+              value="0.8"
+              class="mt-2 w-full rounded-lg border-0 bg-surface-container-high py-3 text-on-surface ring-1 ring-outline-variant/20 focus:ring-2 focus:ring-primary/30"
+            />
+          </div>
+          <details class="glitch border-0">
+            <summary>Contraintes (PWA / iOS)</summary>
+            <p class="glitch__body">
+              Une page web ne bloque pas le Dock ni les apps. Utilisez Temps d’écran ou Concentration sur l’appareil pour les
+              limites système.
+            </p>
+          </details>
+        </div>
+      </section>
+
+      <!-- Saisie -->
+      <section id="panel-log" class="panel space-y-10" role="tabpanel" aria-labelledby="tab-log">
+        <div class="space-y-6">
+          <div class="relative">
+            <div class="pointer-events-none absolute inset-y-0 left-5 flex items-center text-outline">
+              <span class="material-symbols-outlined">search</span>
+            </div>
+            <input
+              id="drink-label"
+              type="text"
+              autocomplete="off"
+              placeholder="Recherche rapide (ex. IPA, Merlot)"
+              class="w-full rounded-lg border-0 bg-surface-container-low py-5 pl-14 pr-6 font-medium text-on-surface placeholder:text-outline/60 focus:ring-2 focus:ring-primary/20"
+            />
+          </div>
+          <label class="block cursor-pointer">
+            <input id="photo" type="file" accept="image/*" capture="environment" class="sr-only" />
+            <span
+              class="group relative flex w-full flex-col items-center justify-center gap-3 overflow-hidden rounded-xl bg-primary-container py-8 px-6 transition-transform active:scale-[0.98]"
+            >
+              <span class="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent opacity-50"></span>
+              <span class="relative z-10 rounded-full bg-on-primary-container/20 p-4">
+                <span class="material-symbols-outlined text-4xl text-primary">photo_camera</span>
+              </span>
+              <span class="relative z-10 text-center">
+                <span class="font-headline text-lg font-bold text-primary">Photo d’étiquette</span>
+                <span class="block text-sm text-on-primary-container">Identifier ou archiver la bouteille</span>
+              </span>
+            </span>
+          </label>
+        </div>
+
+        <section class="space-y-4">
+          <h2 class="pl-2 font-headline text-xl font-bold tracking-tight">Catégories</h2>
+          <div class="grid grid-cols-2 gap-4 sm:grid-cols-4">
+            <button
+              type="button"
+              data-beverage="beer"
+              class="beverage-cat flex flex-col items-center gap-3 rounded-lg border border-outline-variant/10 bg-surface-container p-6 transition-all hover:bg-surface-container-high"
+            >
+              <span class="material-symbols-outlined text-3xl text-secondary transition-transform group-hover:scale-110"
+                >sports_bar</span
+              >
+              <span class="font-label text-xs font-semibold uppercase tracking-widest text-on-surface-variant">Bière</span>
+            </button>
+            <button
+              type="button"
+              data-beverage="wine"
+              class="beverage-cat flex flex-col items-center gap-3 rounded-lg border border-outline-variant/10 bg-surface-container p-6 transition-all hover:bg-surface-container-high"
+            >
+              <span class="material-symbols-outlined text-3xl text-tertiary">wine_bar</span>
+              <span class="font-label text-xs font-semibold uppercase tracking-widest text-on-surface-variant">Vin</span>
+            </button>
+            <button
+              type="button"
+              data-beverage="spirits"
+              class="beverage-cat flex flex-col items-center gap-3 rounded-lg border border-outline-variant/10 bg-surface-container p-6 transition-all hover:bg-surface-container-high"
+            >
+              <span class="material-symbols-outlined text-3xl text-primary">liquor</span>
+              <span class="font-label text-xs font-semibold uppercase tracking-widest text-on-surface-variant">Spiritueux</span>
+            </button>
+            <button
+              type="button"
+              data-beverage="cocktail"
+              class="beverage-cat flex flex-col items-center gap-3 rounded-lg border border-outline-variant/10 bg-surface-container p-6 transition-all hover:bg-surface-container-high"
+            >
+              <span class="material-symbols-outlined text-3xl text-secondary-fixed">local_bar</span>
+              <span class="font-label text-xs font-semibold uppercase tracking-widest text-on-surface-variant">Cocktail</span>
+            </button>
           </div>
         </section>
-      </main>
 
-      <nav class="dock" role="tablist" aria-label="Navigation">
-        <button type="button" role="tab" id="tab-dash" aria-selected="true" data-tab="dash">
-          <svg class="dock__glyph" aria-hidden="true"><use href="#sym-home" /></svg>
-          <span class="dock__label">Accueil</span>
-        </button>
-        <button type="button" role="tab" id="tab-log" aria-selected="false" data-tab="log">
-          <svg class="dock__glyph" aria-hidden="true"><use href="#sym-add" /></svg>
-          <span class="dock__label">Saisie</span>
-        </button>
-        <button type="button" role="tab" id="tab-cal" aria-selected="false" data-tab="cal">
-          <svg class="dock__glyph" aria-hidden="true"><use href="#sym-cal" /></svg>
-          <span class="dock__label">Agenda</span>
-        </button>
-        <button type="button" role="tab" id="tab-prof" aria-selected="false" data-tab="prof">
-          <svg class="dock__glyph" aria-hidden="true"><use href="#sym-user" /></svg>
-          <span class="dock__label">Profil</span>
-        </button>
-        <button type="button" role="tab" id="tab-src" aria-selected="false" data-tab="src">
-          <svg class="dock__glyph" aria-hidden="true"><use href="#sym-lab" /></svg>
-          <span class="dock__label">Sources</span>
-        </button>
-      </nav>
-    </div>
+        <section class="relative space-y-10 overflow-hidden rounded-xl bg-surface-container-low p-8">
+          <div class="absolute -right-24 -top-24 h-48 w-48 rounded-full bg-primary/5 blur-3xl"></div>
+          <div class="space-y-6">
+            <h2 class="font-headline text-xl font-bold tracking-tight">Contexte du jour</h2>
+            <div class="space-y-3">
+              <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                <div>
+                  <label for="volume" class="text-xs uppercase tracking-wider text-on-surface-variant">Volume (ml)</label>
+                  <input
+                    type="number"
+                    id="volume"
+                    min="1"
+                    max="2000"
+                    value="250"
+                    class="mt-2 w-full rounded-lg border-0 bg-surface-container-lowest py-3 text-on-surface ring-1 ring-outline-variant/15 focus:ring-2 focus:ring-primary/25"
+                  />
+                </div>
+                <div>
+                  <label for="abv" class="text-xs uppercase tracking-wider text-on-surface-variant">% vol.</label>
+                  <input
+                    type="number"
+                    id="abv"
+                    min="0"
+                    max="100"
+                    step="0.1"
+                    value="5"
+                    class="mt-2 w-full rounded-lg border-0 bg-surface-container-lowest py-3 text-on-surface ring-1 ring-outline-variant/15 focus:ring-2 focus:ring-primary/25"
+                  />
+                </div>
+              </div>
+              <div>
+                <label for="beverage" class="text-xs uppercase tracking-wider text-on-surface-variant">Type</label>
+                <select
+                  id="beverage"
+                  class="mt-2 w-full rounded-lg border-0 bg-surface-container-lowest py-3 text-on-surface ring-1 ring-outline-variant/15 focus:ring-2 focus:ring-primary/25"
+                >
+                  <option value="beer">Bière</option>
+                  <option value="wine">Vin</option>
+                  <option value="spirits">Spiritueux</option>
+                  <option value="cocktail">Cocktail</option>
+                  <option value="other">Autre</option>
+                </select>
+              </div>
+              <div>
+                <label for="at-time" class="text-xs uppercase tracking-wider text-on-surface-variant">Début</label>
+                <input
+                  type="datetime-local"
+                  id="at-time"
+                  class="mt-2 w-full rounded-lg border-0 bg-surface-container-lowest py-3 text-on-surface ring-1 ring-outline-variant/15 focus:ring-2 focus:ring-primary/25"
+                />
+              </div>
+              <label
+                class="flex cursor-pointer items-center justify-between rounded-lg border border-outline-variant/5 bg-surface-container-lowest p-4 transition-colors hover:bg-surface-container-high"
+              >
+                <span class="font-medium text-on-surface-variant">Repas avant ?</span>
+                <select id="food" class="rounded-md border-0 bg-surface-variant text-sm text-on-surface focus:ring-primary/40">
+                  <option value="yes">Oui</option>
+                  <option value="no" selected>Non</option>
+                </select>
+              </label>
+              <label
+                class="flex cursor-pointer items-center justify-between rounded-lg border border-outline-variant/5 bg-surface-container-lowest p-4 transition-colors hover:bg-surface-container-high"
+              >
+                <span class="font-medium text-on-surface-variant">Activité physique ?</span>
+                <select id="activity" class="rounded-md border-0 bg-surface-variant text-sm text-on-surface focus:ring-primary/40">
+                  <option value="yes">Oui</option>
+                  <option value="no" selected>Non</option>
+                </select>
+              </label>
+            </div>
+          </div>
+          <div class="space-y-4">
+            <div class="flex items-end justify-between">
+              <h2 class="font-headline text-xl font-bold tracking-tight">Durée de la prise</h2>
+              <span class="font-headline text-2xl font-bold text-primary"
+                ><span id="duration-label">30</span><span class="ml-1 font-body text-sm text-on-surface-variant">min</span></span
+              >
+            </div>
+            <input
+              id="duration"
+              type="range"
+              min="5"
+              max="480"
+              step="15"
+              value="30"
+              class="aura-range h-2 w-full cursor-pointer appearance-none rounded-full bg-surface-container-highest accent-primary"
+            />
+            <div class="flex justify-between font-label text-xs uppercase tracking-wider text-outline">
+              <span>Rapide</span>
+              <span>Longue session (8h)</span>
+            </div>
+          </div>
+        </section>
 
-    <div id="drunk-overlay" aria-hidden="true">
-      <p class="drunk-badge">// seuil dépassé</p>
-      <h2>Mode sécurité</h2>
-      <p id="drunk-blocks" class="disclaimer" style="color: #9aa5a6; white-space: pre-wrap; max-height: 30vh; overflow: auto"></p>
-      <div class="drunk-actions">
-        <a class="tel" href="tel:" id="drunk-tel">Appeler</a>
-        <a class="maps" href="https://maps.apple.com/" target="_blank" rel="noopener">Plans</a>
-        <a class="uber" href="https://m.uber.com/" target="_blank" rel="noopener">Uber</a>
-        <button type="button" class="secondary" id="drunk-close" style="color: #fff; border-color: #444; margin-top: 0.25rem">
-          Fermer
+        <div>
+          <label for="notes" class="text-xs uppercase tracking-wider text-on-surface-variant">Notes</label>
+          <textarea
+            id="notes"
+            placeholder="Fatigue, médicaments…"
+            class="mt-2 min-h-[5rem] w-full rounded-xl border-0 bg-surface-container-low py-3 text-on-surface ring-1 ring-outline-variant/15 focus:ring-2 focus:ring-primary/25"
+          ></textarea>
+        </div>
+
+        <section class="space-y-6">
+          <h2 class="pl-2 font-headline text-xl font-bold tracking-tight">Prévision d’impact</h2>
+          <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <div class="flex items-start gap-4 rounded-lg bg-surface-container p-6">
+              <div class="rounded-full bg-secondary/10 p-3">
+                <span class="material-symbols-outlined text-secondary">monitor_heart</span>
+              </div>
+              <div>
+                <p class="font-label text-sm text-on-surface-variant">Charge estimée</p>
+                <p class="font-headline text-lg font-bold text-secondary">Variable</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-4 rounded-lg bg-surface-container p-6">
+              <div class="rounded-full bg-tertiary/10 p-3">
+                <span class="material-symbols-outlined text-tertiary">bedtime</span>
+              </div>
+              <div>
+                <p class="font-label text-sm text-on-surface-variant">Sommeil</p>
+                <p class="font-headline text-lg font-bold text-tertiary">À modérer</p>
+              </div>
+            </div>
+          </div>
+          <div class="relative overflow-hidden rounded-lg border border-primary/10 bg-surface-container-high p-6">
+            <div class="mb-4 flex items-center justify-between">
+              <span class="font-label text-xs font-bold uppercase tracking-widest text-primary">BAC projeté (actuel)</span>
+              <span id="impact-bac" class="font-headline text-2xl font-extrabold text-on-surface">0,00%</span>
+            </div>
+            <div class="h-3 w-full overflow-hidden rounded-full bg-surface-container-lowest">
+              <div id="impact-bar" class="h-full rounded-full bg-gradient-to-r from-secondary to-tertiary shadow-[0_0_8px_rgba(102,217,204,0.35)]" style="width: 0%"></div>
+            </div>
+            <p class="mt-4 text-xs leading-relaxed text-on-surface-variant">
+              Valeur issue du modèle actuel (estimation, pas mesure). Voir Sources pour le cadre scientifique.
+            </p>
+          </div>
+        </section>
+
+        <button
+          type="button"
+          id="btn-save-drink"
+          class="w-full rounded-full bg-gradient-to-r from-primary to-on-primary-container py-5 font-headline text-lg font-extrabold text-on-primary shadow-lg shadow-primary/10 transition-all active:scale-95"
+        >
+          Confirmer l’entrée
+        </button>
+        <details class="glitch">
+          <summary>Modèle cinétique</summary>
+          <p class="glitch__body">
+            Type de boisson et repas influencent l’absorption (ex. Mitchell et al., 2014). La valeur affichée est une estimation, pas
+            une mesure biologique.
+          </p>
+        </details>
+      </section>
+
+      <!-- Calendrier -->
+      <section id="panel-cal" class="panel space-y-8" role="tabpanel" aria-labelledby="tab-cal">
+        <div class="rounded-xl border border-outline-variant/10 bg-surface-container-low p-6">
+          <h2 class="mb-4 font-headline text-xl font-bold">Calendrier</h2>
+          <div class="cal-nav mb-4 flex items-center justify-between gap-2">
+            <button
+              type="button"
+              id="cal-prev"
+              class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-surface-container-high text-on-surface-variant ring-1 ring-outline-variant/20"
+              aria-label="Mois précédent"
+            >
+              <svg class="h-5 w-5" aria-hidden="true"><use href="#sym-chev-l" /></svg>
+            </button>
+            <p id="cal-title" class="flex-1 text-center font-headline text-sm font-bold uppercase tracking-wider text-on-surface"></p>
+            <button
+              type="button"
+              id="cal-next"
+              class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-surface-container-high text-on-surface-variant ring-1 ring-outline-variant/20"
+              aria-label="Mois suivant"
+            >
+              <svg class="h-5 w-5" aria-hidden="true"><use href="#sym-chev-r" /></svg>
+            </button>
+          </div>
+          <div id="cal-head" class="calendar mb-1"></div>
+          <div id="cal-grid" class="calendar"></div>
+        </div>
+        <div class="rounded-xl border border-outline-variant/10 bg-surface-container-low p-6">
+          <h2 class="mb-3 font-headline text-xl font-bold">Jour sélectionné</h2>
+          <div id="cal-day-detail" class="space-y-3 text-sm"></div>
+        </div>
+        <div class="rounded-xl border border-outline-variant/10 bg-surface-container-low p-6">
+          <h2 class="mb-3 font-headline text-xl font-bold">Liste prudence</h2>
+          <label for="block-list" class="text-xs uppercase tracking-wider text-on-surface-variant">À éviter (rappel)</label>
+          <textarea
+            id="block-list"
+            class="mt-2 min-h-[6rem] w-full rounded-xl border-0 bg-surface-container-lowest py-3 text-on-surface ring-1 ring-outline-variant/15"
+            placeholder="Une entrée par ligne"
+          ></textarea>
+          <button
+            type="button"
+            id="btn-save-blocks"
+            class="mt-4 w-full rounded-xl border border-outline-variant/20 bg-surface-container-high py-3 font-semibold text-on-surface transition-colors hover:bg-surface-bright"
+          >
+            Enregistrer
+          </button>
+          <details class="glitch mt-4">
+            <summary>Blocage réel</summary>
+            <p class="glitch__body">Le navigateur ne bloque pas les apps — cette liste sert de rappel dans l’app.</p>
+          </details>
+        </div>
+      </section>
+
+      <!-- Profil -->
+      <section id="panel-prof" class="panel space-y-10" role="tabpanel" aria-labelledby="tab-prof">
+        <header class="space-y-2">
+          <h2 class="font-headline text-3xl font-extrabold tracking-tight text-on-surface-variant">Profil &amp; santé</h2>
+          <p class="text-on-surface-variant/80">Données pour l’estimation et les rappels.</p>
+        </header>
+
+        <section class="space-y-6">
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-primary">analytics</span>
+            <h3 class="font-headline text-xl font-bold">Biométrie</h3>
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div class="space-y-4 rounded-xl bg-surface-container-low p-6 md:col-span-1">
+              <label class="block font-label text-sm uppercase tracking-widest text-on-surface-variant">Sexe biologique</label>
+              <select
+                id="sex"
+                class="w-full rounded-xl border-0 bg-surface-container-high py-3 text-on-surface ring-1 ring-outline-variant/15 focus:ring-2 focus:ring-primary/25"
+              >
+                <option value="male">Homme</option>
+                <option value="female">Femme</option>
+                <option value="other">Autre</option>
+              </select>
+            </div>
+            <div class="space-y-4 rounded-xl bg-surface-container-low p-6">
+              <label class="block font-label text-sm uppercase tracking-widest text-on-surface-variant">Poids (kg)</label>
+              <input
+                type="number"
+                id="weight"
+                min="35"
+                max="200"
+                value="75"
+                class="w-full border-0 border-b border-outline-variant/30 bg-transparent py-1 font-headline text-2xl font-bold text-primary focus:border-primary focus:ring-0"
+              />
+            </div>
+            <div class="space-y-4 rounded-xl bg-surface-container-low p-6">
+              <label class="block font-label text-sm uppercase tracking-widest text-on-surface-variant">Taille (cm)</label>
+              <input
+                type="number"
+                id="height"
+                min="120"
+                max="220"
+                value="175"
+                class="w-full border-0 border-b border-outline-variant/30 bg-transparent py-1 font-headline text-2xl font-bold text-primary focus:border-primary focus:ring-0"
+              />
+            </div>
+            <div class="col-span-2 space-y-4 rounded-xl bg-surface-container-low p-6">
+              <label class="block font-label text-sm uppercase tracking-widest text-on-surface-variant">β élimination (g/L/h)</label>
+              <input
+                type="number"
+                id="beta"
+                min="0.08"
+                max="0.22"
+                step="0.01"
+                value="0.14"
+                class="w-full rounded-xl border-0 bg-surface-container-high py-3 font-headline text-xl font-bold text-primary ring-1 ring-outline-variant/15"
+              />
+            </div>
+          </div>
+        </section>
+
+        <section class="space-y-6">
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-secondary">water_drop</span>
+            <h3 class="font-headline text-xl font-bold">Hydratation</h3>
+          </div>
+          <div class="space-y-4 rounded-xl bg-surface-container-high p-6">
+            <label class="flex items-center justify-between gap-4">
+              <span class="font-bold">Rappel quotidien</span>
+              <input type="checkbox" id="water-daily" class="h-6 w-6 rounded-md border-0 bg-surface-variant text-primary focus:ring-primary/40" />
+            </label>
+            <div>
+              <label for="water-time" class="text-xs uppercase tracking-wider text-on-surface-variant">Heure</label>
+              <input
+                type="time"
+                id="water-time"
+                value="12:00"
+                class="mt-2 w-full rounded-xl border-0 bg-surface-container-lowest py-3 ring-1 ring-outline-variant/15"
+              />
+            </div>
+            <label class="flex items-center justify-between gap-4">
+              <span class="font-bold">Pendant la session (45 min)</span>
+              <input type="checkbox" id="water-session" class="h-6 w-6 rounded-md border-0 bg-surface-variant text-primary focus:ring-primary/40" />
+            </label>
+          </div>
+        </section>
+
+        <button
+          type="button"
+          id="btn-export"
+          class="w-full rounded-xl border border-outline-variant/25 bg-surface-container-high py-4 font-semibold text-on-surface transition-colors hover:bg-surface-bright"
+        >
+          Export JSON
+        </button>
+        <details class="glitch">
+          <summary>Santé &amp; calendrier natifs</summary>
+          <p class="glitch__body">HealthKit et agendas système ne sont pas exposés aux PWA. Utilisez l’export JSON si besoin.</p>
+        </details>
+      </section>
+
+      <!-- Sources -->
+      <section id="panel-src" class="panel" role="tabpanel" aria-labelledby="tab-src">
+        <div class="rounded-xl border border-outline-variant/10 bg-surface-container-low p-6">
+          <h2 class="font-headline text-xl font-bold">Références</h2>
+          <p class="mt-2 text-sm text-on-surface-variant">
+            Absorption et pic BAC : type de boisson, jeûne, vidange gastrique (Mitchell et al., 2014).
+          </p>
+          <details class="glitch mt-4">
+            <summary>Liens &amp; études</summary>
+            <div class="glitch__body">
+              <ul class="link-list space-y-2">
+                <li>
+                  <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC4112772/" target="_blank" rel="noopener" class="text-primary hover:underline"
+                    >PMC4112772</a
+                  >
+                </li>
+                <li>
+                  <a
+                    href="https://pmc.ncbi.nlm.nih.gov/articles/PMC4112772/table/acer12355-tbl-0001/?report=objectonly"
+                    target="_blank"
+                    rel="noopener"
+                    class="text-primary hover:underline"
+                    >Table PMC</a
+                  >
+                </li>
+                <li>
+                  <a href="https://doi.org/10.1111/acer.12355" target="_blank" rel="noopener" class="text-primary hover:underline"
+                    >DOI 10.1111/acer.12355</a
+                  >
+                </li>
+              </ul>
+            </div>
+          </details>
+        </div>
+      </section>
+    </main>
+
+    <nav
+      class="dock fixed bottom-0 left-0 z-50 flex w-full justify-around rounded-t-[3rem] bg-neutral-900/80 px-4 py-3 pb-[max(1rem,env(safe-area-inset-bottom))] shadow-[0_-8px_30px_rgb(0,0,0,0.12)] backdrop-blur-2xl"
+      role="tablist"
+      aria-label="Navigation"
+    >
+      <button type="button" role="tab" id="tab-dash" class="dock-btn" aria-selected="true" data-tab="dash">
+        <span class="material-symbols-outlined dock__glyph text-[26px]">home_health</span>
+        <span class="dock__label">Accueil</span>
+      </button>
+      <button type="button" role="tab" id="tab-log" class="dock-btn" aria-selected="false" data-tab="log">
+        <span class="material-symbols-outlined dock__glyph text-[26px]">add_circle</span>
+        <span class="dock__label">Saisie</span>
+      </button>
+      <button type="button" role="tab" id="tab-cal" class="dock-btn" aria-selected="false" data-tab="cal">
+        <span class="material-symbols-outlined dock__glyph text-[26px]">calendar_month</span>
+        <span class="dock__label">Agenda</span>
+      </button>
+      <button type="button" role="tab" id="tab-prof" class="dock-btn" aria-selected="false" data-tab="prof">
+        <span class="material-symbols-outlined dock__glyph text-[26px]">person</span>
+        <span class="dock__label">Profil</span>
+      </button>
+      <button type="button" role="tab" id="tab-src" class="dock-btn" aria-selected="false" data-tab="src">
+        <span class="material-symbols-outlined dock__glyph text-[26px]">biotech</span>
+        <span class="dock__label">Sources</span>
+      </button>
+    </nav>
+
+    <div
+      id="drunk-overlay"
+      class="drunk-overlay"
+      aria-hidden="true"
+    >
+      <div class="drunk-overlay__glow drunk-overlay__glow--tl" aria-hidden="true"></div>
+      <div class="drunk-overlay__glow drunk-overlay__glow--br" aria-hidden="true"></div>
+      <div class="relative z-10 mx-auto flex max-w-lg flex-1 flex-col gap-8 overflow-y-auto px-6 pb-10 pt-8">
+        <div class="flex flex-col items-center text-center">
+          <div class="mb-2 inline-flex items-center gap-2 rounded-full border border-tertiary/20 bg-tertiary-container/30 px-4 py-1.5">
+            <span class="h-2 w-2 animate-pulse rounded-full bg-tertiary"></span>
+            <span class="font-label text-xs uppercase tracking-widest text-tertiary">Protection active</span>
+          </div>
+          <h2 class="font-headline text-4xl font-extrabold tracking-tighter text-on-surface">Mode Soirée</h2>
+          <p class="font-medium text-on-surface-variant">Seuil de sécurité atteint. Priorité à votre protection.</p>
+        </div>
+
+        <p id="drunk-blocks" class="rounded-xl border border-outline-variant/20 bg-surface-container/60 px-4 py-3 text-left text-sm text-on-surface-variant"></p>
+
+        <a
+          class="neon-glow-primary group block w-full rounded-xl bg-gradient-to-br from-primary to-primary-container p-1 active:scale-[0.98]"
+          href="tel:"
+          id="drunk-tel"
+        >
+          <div class="flex aspect-[2/1] flex-col items-center justify-center gap-2 rounded-[2.8rem] bg-background/10 backdrop-blur-sm">
+            <span class="material-symbols-outlined text-6xl text-on-primary" style="font-variation-settings: 'FILL' 1">local_taxi</span>
+            <span class="font-headline text-2xl font-extrabold uppercase tracking-tighter text-on-primary">Appeler</span>
+          </div>
+        </a>
+
+        <section class="rounded-xl border border-secondary/20 bg-secondary-container/20 p-5 neon-glow-secondary">
+          <div class="flex items-center gap-5">
+            <div class="rounded-full bg-secondary/20 p-4">
+              <span class="material-symbols-outlined text-3xl text-secondary" style="font-variation-settings: 'FILL' 1">water_drop</span>
+            </div>
+            <div class="flex flex-col text-left">
+              <h3 class="font-headline text-lg font-bold text-secondary">Hydratation</h3>
+              <p class="text-sm text-on-surface-variant">Pensez à boire un grand verre d’eau.</p>
+            </div>
+          </div>
+        </section>
+
+        <div class="grid grid-cols-1 gap-3">
+          <a
+            class="flex items-center justify-center gap-3 rounded-xl border border-outline-variant/25 bg-surface-container-highest py-4 font-headline text-lg font-bold text-on-surface transition-colors hover:bg-surface-bright"
+            href="https://maps.apple.com/"
+            target="_blank"
+            rel="noopener"
+          >
+            <span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1">map</span>
+            Plans
+          </a>
+          <a
+            class="flex items-center justify-center gap-3 rounded-xl border border-outline-variant/25 bg-surface-container py-4 font-headline text-lg font-bold text-on-surface transition-colors hover:bg-surface-container-high"
+            href="https://m.uber.com/"
+            target="_blank"
+            rel="noopener"
+          >
+            <span class="material-symbols-outlined text-on-surface-variant">local_taxi</span>
+            Uber
+          </a>
+        </div>
+
+        <button
+          type="button"
+          id="drunk-close"
+          class="w-full rounded-full border border-outline-variant/30 bg-surface-container-high py-4 font-semibold text-on-surface"
+        >
+          Fermer (rappel plus tard)
         </button>
       </div>
     </div>
