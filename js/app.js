@@ -54,7 +54,7 @@ function showToast(msg) {
 }
 
 function setTab(id) {
-  document.querySelectorAll('nav.tabs button').forEach((b) => {
+  document.querySelectorAll('nav.dock button[data-tab]').forEach((b) => {
     b.setAttribute('aria-selected', b.dataset.tab === id ? 'true' : 'false');
   });
   document.querySelectorAll('main section.panel').forEach((p) => {
@@ -62,7 +62,7 @@ function setTab(id) {
   });
 }
 
-document.querySelectorAll('nav.tabs button').forEach((btn) => {
+document.querySelectorAll('nav.dock button[data-tab]').forEach((btn) => {
   btn.addEventListener('click', () => setTab(btn.dataset.tab));
 });
 
@@ -117,13 +117,12 @@ function refreshDash() {
   if (bac >= state.thresholds.legal) val.classList.add('warn');
   if (bac >= state.thresholds.drunk) val.classList.add('danger');
 
-  el('meta-peak').textContent = `Pic (simulation) ≈ ${res.peakEstimateGL.toFixed(2).replace('.', ',')} g/L`;
+  el('meta-peak').textContent = `Pic ≈ ${res.peakEstimateGL.toFixed(2).replace('.', ',')} g/L`;
   el('meta-since').innerHTML =
     res.hoursSinceFirst > 0
-      ? `Depuis 1<sup>re</sup> gorgée ≈ ${res.hoursSinceFirst.toFixed(1).replace('.', ',')} h`
-      : 'Session en cours ou vide';
+      ? `Δt ${res.hoursSinceFirst.toFixed(1).replace('.', ',')} h`
+      : '—';
   el('bac-disclaimer').textContent = res.disclaimer;
-  el('show-legal').textContent = String(state.thresholds.legal).replace('.', ',');
 
   drunkModeCheck(bac);
   notifyCheck(bac);
@@ -205,8 +204,8 @@ el('btn-notif').addEventListener('click', async () => {
   const p = await Notification.requestPermission();
   el('notif-status').textContent =
     p === 'granted'
-      ? 'Notifications activées. Gardez l’app ouverte en session pour une meilleure fiabilité sur iOS.'
-      : 'Refusé — rappels désactivés.';
+      ? 'Activées. Sur iOS, garder l’app ouverte améliore la fiabilité des rappels.'
+      : 'Refusé.';
 });
 
 function tick() {
@@ -365,7 +364,7 @@ function renderDayDetail() {
   const box = el('cal-day-detail');
   const list = map[selectedDay] || [];
   if (list.length === 0) {
-    box.innerHTML = `<p class="disclaimer">Aucune entrée pour ${selectedDay}.</p>`;
+    box.innerHTML = `<p class="meta-tiny">Vide · ${selectedDay}</p>`;
     return;
   }
   box.innerHTML = list
@@ -373,9 +372,9 @@ function renderDayDetail() {
       const t = new Date(d.at).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
       const photo = d.photoData ? `<img class="thumb" src="${d.photoData}" alt="" />` : '';
       return `<div class="list-entry">
-        <strong>${t}</strong> — ${d.label || d.beverage} · ${d.volumeMl} ml · ${d.abv}% vol.<br/>
-        <span class="disclaimer">Repas: ${d.foodBefore ? 'oui' : 'non'} · Activité: ${d.activityBefore ? 'oui' : 'non'}</span>
-        ${d.notes ? `<br/>${escapeHtml(d.notes)}` : ''}
+        <strong>${t}</strong> · ${d.label || d.beverage} · ${d.volumeMl} ml · ${d.abv}%<br/>
+        <span class="meta-tiny">Repas ${d.foodBefore ? 'oui' : 'non'} · sport ${d.activityBefore ? 'oui' : 'non'}</span>
+        ${d.notes ? `<br/><span class="meta-tiny">${escapeHtml(d.notes)}</span>` : ''}
         ${photo}
       </div>`;
     })

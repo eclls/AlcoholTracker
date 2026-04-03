@@ -6,7 +6,7 @@
       name="viewport"
       content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1"
     />
-    <meta name="theme-color" content="#1a5f4a" />
+    <meta name="theme-color" content="#0a0d0f" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <title>Alcool Tracker</title>
@@ -14,245 +14,322 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,600;0,9..40,700;1,9..40,400&display=swap"
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&display=swap"
       rel="stylesheet"
     />
     <link rel="stylesheet" href="css/app.css" />
     <link rel="apple-touch-icon" href="icons/icon-192.png" />
   </head>
   <body>
-    <header class="app-header">
-      <h1>Alcool Tracker</h1>
-      <p>Suivi et estimation théorique — outil d’aide, pas un alcootest.</p>
-    </header>
+    <svg xmlns="http://www.w3.org/2000/svg" class="svg-defs" aria-hidden="true" focusable="false">
+      <defs>
+        <symbol id="sym-home" viewBox="0 0 24 24" fill="none">
+          <path
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linejoin="round"
+            d="M4 10.5 12 4l8 6.5V20a1 1 0 0 1-1 1h-5v-6H10v6H5a1 1 0 0 1-1-1v-9.5z"
+          />
+        </symbol>
+        <symbol id="sym-add" viewBox="0 0 24 24" fill="none">
+          <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.5" />
+          <path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" d="M12 8v8M8 12h8" />
+        </symbol>
+        <symbol id="sym-cal" viewBox="0 0 24 24" fill="none">
+          <rect x="3" y="5" width="18" height="16" rx="2" stroke="currentColor" stroke-width="1.5" />
+          <path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" d="M3 10h18M8 3v4M16 3v4" />
+          <path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01" />
+        </symbol>
+        <symbol id="sym-user" viewBox="0 0 24 24" fill="none">
+          <circle cx="12" cy="8" r="3.5" stroke="currentColor" stroke-width="1.5" />
+          <path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" d="M5 20v-1a7 7 0 0 1 14 0v1" />
+        </symbol>
+        <symbol id="sym-lab" viewBox="0 0 24 24" fill="none">
+          <path
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M9 3h6M10 3v5.2L6 18a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2l-4-9.8V3M9 14h6"
+          />
+        </symbol>
+        <symbol id="sym-chev-l" viewBox="0 0 24 24" fill="none">
+          <path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M14 6l-6 6 6 6" />
+        </symbol>
+        <symbol id="sym-chev-r" viewBox="0 0 24 24" fill="none">
+          <path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M10 6l6 6-6 6" />
+        </symbol>
+      </defs>
+    </svg>
 
-    <nav class="tabs" role="tablist" aria-label="Sections">
-      <button type="button" role="tab" aria-selected="true" data-tab="dash">Accueil</button>
-      <button type="button" role="tab" aria-selected="false" data-tab="log">Enregistrer</button>
-      <button type="button" role="tab" aria-selected="false" data-tab="cal">Calendrier</button>
-      <button type="button" role="tab" aria-selected="false" data-tab="prof">Profil</button>
-      <button type="button" role="tab" aria-selected="false" data-tab="src">Sources</button>
-    </nav>
-
-    <main>
-      <section id="panel-dash" class="panel active" role="tabpanel">
-        <div class="card bac-display">
-          <div id="bac-value" class="bac-value">0,00</div>
-          <div class="bac-unit">g/L (estimé)</div>
-          <div class="meta-row">
-            <span id="meta-peak">Pic estimé —</span>
-            <span id="meta-since">Depuis 1<sup>re</sup> gorgée —</span>
-          </div>
-          <p class="disclaimer" id="bac-disclaimer"></p>
+    <div class="app-shell">
+      <header class="app-header">
+        <div class="app-header__mark" aria-hidden="true">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M12 3v18M8 7c0-2 2-3 4-3s4 1 4 3v10c0 2-2 3-4 3s-4-1-4-3V7z"
+            />
+          </svg>
         </div>
+        <h1>Alcool Tracker</h1>
+        <p class="tagline">Estimation · suivi</p>
+      </header>
 
-        <div class="card">
-          <h2>Seuils &amp; rappels</h2>
-          <p class="disclaimer">
-            Alerte à <strong id="show-legal">0,5</strong> g/L (réglable) et rappels hydratation si les notifications sont
-            autorisées (iOS 16.4+ pour certaines web apps).
-          </p>
-          <button type="button" class="primary" id="btn-notif">Activer les notifications</button>
-          <p class="disclaimer" id="notif-status"></p>
-        </div>
-
-        <div class="card">
-          <h2>Mode sécurité (écran)</h2>
-          <p class="disclaimer">
-            Lorsque l’estimation dépasse votre seuil « mode sécurité », cet écran affiche téléphone, Plans et Uber.
-            <strong>iOS ne permet pas</strong> à une page web de modifier les favoris du Dock, de bloquer des apps ou des
-            contacts — utilisez Temps d’écran / Concentration sur le téléphone pour le reste.
-          </p>
-          <label for="threshold-drunk">Seuil personnel (g/L)</label>
-          <input type="number" id="threshold-drunk" min="0.2" max="3" step="0.05" value="0.8" />
-          <label for="threshold-legal">Seuil d’alerte légal / perso (g/L)</label>
-          <input type="number" id="threshold-legal" min="0.1" max="2" step="0.05" value="0.5" />
-        </div>
-      </section>
-
-      <section id="panel-log" class="panel" role="tabpanel">
-        <div class="card">
-          <h2>Nouvelle consommation</h2>
-          <label for="drink-label">Libellé (ex. bière blonde)</label>
-          <input type="text" id="drink-label" placeholder="Optionnel" autocomplete="off" />
-
-          <div class="row2">
-            <div>
-              <label for="volume">Volume (ml)</label>
-              <input type="number" id="volume" min="1" max="2000" value="250" />
+      <main>
+        <section id="panel-dash" class="panel active" role="tabpanel" aria-labelledby="tab-dash">
+          <div class="card card--hero bac-display">
+            <div id="bac-value" class="bac-value">0,00</div>
+            <div class="bac-unit">g/L</div>
+            <div class="meta-row">
+              <span id="meta-peak">Pic —</span>
+              <span id="meta-since">Δt —</span>
             </div>
-            <div>
-              <label for="abv">Titre alcoométrique (% vol.)</label>
-              <input type="number" id="abv" min="0" max="100" step="0.1" value="5" />
-            </div>
-          </div>
-
-          <label for="beverage">Type de boisson (modèle cinétique)</label>
-          <select id="beverage">
-            <option value="beer">Bière</option>
-            <option value="wine">Vin</option>
-            <option value="spirits">Spiritueux / fort</option>
-            <option value="cocktail">Cocktail</option>
-            <option value="other">Autre</option>
-          </select>
-
-          <label for="at-time">Heure de début</label>
-          <input type="datetime-local" id="at-time" />
-
-          <label for="duration">Durée de consommation (min)</label>
-          <input type="number" id="duration" min="5" max="480" value="30" />
-
-          <div class="row2">
-            <div>
-              <label for="food">Repas avant / pendant</label>
-              <select id="food">
-                <option value="yes">Oui</option>
-                <option value="no" selected>Non</option>
-              </select>
-            </div>
-            <div>
-              <label for="activity">Activité physique avant</label>
-              <select id="activity">
-                <option value="yes">Oui</option>
-                <option value="no" selected>Non</option>
-              </select>
-            </div>
+            <details class="glitch">
+              <summary>méthode &amp; limite</summary>
+              <p id="bac-disclaimer" class="glitch__body"></p>
+            </details>
           </div>
 
-          <label for="notes">Autres facteurs (fatigue, sommeil, médicaments…)</label>
-          <textarea id="notes" placeholder="Notes privées, non partagées"></textarea>
-
-          <label for="photo">Photo de l’étiquette / référence</label>
-          <input type="file" id="photo" accept="image/*" capture="environment" />
-
-          <button type="button" class="primary" id="btn-save-drink">Enregistrer</button>
-        </div>
-      </section>
-
-      <section id="panel-cal" class="panel" role="tabpanel">
-        <div class="card">
-          <h2>Calendrier</h2>
-          <div class="row2">
-            <button type="button" class="secondary" id="cal-prev">◀ Mois</button>
-            <button type="button" class="secondary" id="cal-next">Mois ▶</button>
+          <div class="card">
+            <h2 class="card__title">Alertes</h2>
+            <label for="threshold-legal">Seuil alerte (g/L)</label>
+            <input type="number" id="threshold-legal" min="0.1" max="2" step="0.05" value="0.5" />
+            <button type="button" class="primary" id="btn-notif">Notifications</button>
+            <details class="glitch">
+              <summary>statut &amp; iOS</summary>
+              <p id="notif-status" class="glitch__body"></p>
+            </details>
           </div>
-          <p id="cal-title" style="text-align: center; font-weight: 600; margin: 0.5rem 0"></p>
-          <div class="calendar" id="cal-head"></div>
-          <div class="calendar" id="cal-grid"></div>
-        </div>
-        <div class="card">
-          <h2>Journée sélectionnée</h2>
-          <div id="cal-day-detail"></div>
-        </div>
-        <div class="card">
-          <h2>Liste de prudence (rappels)</h2>
-          <p class="disclaimer">Pas de blocage système depuis le navigateur — listes personnelles.</p>
-          <label>Contacts / apps à éviter (une ligne = une entrée)</label>
-          <textarea id="block-list" placeholder="Ex. : @ex&#10;Snapchat"></textarea>
-          <button type="button" class="secondary" id="btn-save-blocks">Enregistrer la liste</button>
-        </div>
-      </section>
 
-      <section id="panel-prof" class="panel" role="tabpanel">
-        <div class="card">
-          <h2>Profil physiologique</h2>
-          <label for="sex">Sexe (coefficient de distribution)</label>
-          <select id="sex">
-            <option value="male">Homme</option>
-            <option value="female">Femme</option>
-            <option value="other">Autre / intersexe</option>
-          </select>
-          <div class="row2">
-            <div>
-              <label for="weight">Poids (kg)</label>
-              <input type="number" id="weight" min="35" max="200" value="75" />
-            </div>
-            <div>
-              <label for="height">Taille (cm)</label>
-              <input type="number" id="height" min="120" max="220" value="175" />
-            </div>
+          <div class="card">
+            <h2 class="card__title">Mode sécurité</h2>
+            <label for="threshold-drunk">Seuil écran plein (g/L)</label>
+            <input type="number" id="threshold-drunk" min="0.2" max="3" step="0.05" value="0.8" />
+            <details class="glitch">
+              <summary>contraintes système</summary>
+              <p class="glitch__body">
+                Au-delà du seuil, écran avec appels, Plans et Uber. Une page web ne modifie pas le Dock iOS ni ne bloque
+                apps/contacts — utilisez Temps d’écran / Concentration sur l’appareil.
+              </p>
+            </details>
           </div>
-          <label for="beta">Vitesse d’élimination β (g/L/h)</label>
-          <input type="number" id="beta" min="0.08" max="0.22" step="0.01" value="0.14" />
-          <p class="disclaimer">
-            L’app Santé Apple (HealthKit) et le calendrier natif ne sont pas accessibles directement depuis une PWA. Vous
-            pouvez exporter vos données (JSON) pour les importer ailleurs ou créer un rappel manuel dans Calendrier.
-          </p>
-          <button type="button" class="secondary" id="btn-export">Exporter les données (JSON)</button>
-        </div>
+        </section>
 
-        <div class="card">
-          <h2>Rappels eau (OMS : adaptation selon soif, climat, activité)</h2>
-          <label>
-            <input type="checkbox" id="water-daily" /> Rappel quotidien (eau)
-          </label>
-          <label for="water-time">Heure du rappel</label>
-          <input type="time" id="water-time" value="12:00" />
-          <label>
-            <input type="checkbox" id="water-session" /> Pendant la session d’alcool (toutes les 45 min)
-          </label>
-        </div>
-      </section>
+        <section id="panel-log" class="panel" role="tabpanel" aria-labelledby="tab-log">
+          <div class="card">
+            <h2 class="card__title">Saisie</h2>
+            <label for="drink-label">Référence</label>
+            <input type="text" id="drink-label" placeholder="ex. blonde 25cl" autocomplete="off" />
 
-      <section id="panel-src" class="panel" role="tabpanel">
-        <div class="card sources">
-          <h2>Documentation &amp; modèle</h2>
-          <p class="disclaimer">
-            L’absorption d’éthanol dépend de la dose, du <strong>type de boisson</strong>, du <strong>jeûne</strong> et
-            du débit gastrique (Mitchell et al., 2014 : pic plus haut et plus précoce avec spiritueux qu’avec bière à dose
-            d’éthanol fixée). L’estimation intégrée ici reste <strong>scolaire</strong> et ne remplace pas les mesures
-            biologiques.
-          </p>
-          <details>
-            <summary>Études &amp; liens</summary>
-            <ul>
-              <li>
-                <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC4112772/" target="_blank" rel="noopener"
-                  >PMC4112772 — Absorption et pic BAC (bière, vin, spiritueux)</a
-                >
-              </li>
-              <li>
-                <a
-                  href="https://pmc.ncbi.nlm.nih.gov/articles/PMC4112772/table/acer12355-tbl-0001/?report=objectonly"
-                  target="_blank"
-                  rel="noopener"
-                  >Table PMC (même étude)</a
-                >
-              </li>
-              <li>
-                <a href="https://doi.org/10.1111/acer.12355" target="_blank" rel="noopener">DOI 10.1111/acer.12355</a>
-              </li>
-              <li>
-                Autres références à croiser (accès variable selon revue) : effets des boissons sur l’alcoolémie, cinétique
-                (SciDirect, JSAD, etc.) — utiles pour calibrer β et facteurs de population, pas intégrés ligne par ligne
-                dans cette démo.
-              </li>
-            </ul>
-          </details>
-          <details>
-            <summary>OMS — hydratation</summary>
-            <p class="disclaimer">
-              L’OMS recommande l’eau potable sûre selon le contexte ; les besoins varient. Pendant l’alcool, s’hydrater
-              aide à la vigilance mais ne « dégrise » pas mécaniquement.
+            <div class="row2">
+              <div>
+                <label for="volume">ml</label>
+                <input type="number" id="volume" min="1" max="2000" value="250" />
+              </div>
+              <div>
+                <label for="abv">% vol.</label>
+                <input type="number" id="abv" min="0" max="100" step="0.1" value="5" />
+              </div>
+            </div>
+
+            <label for="beverage">Type</label>
+            <select id="beverage">
+              <option value="beer">Bière</option>
+              <option value="wine">Vin</option>
+              <option value="spirits">Spiritueux</option>
+              <option value="cocktail">Cocktail</option>
+              <option value="other">Autre</option>
+            </select>
+
+            <label for="at-time">Début</label>
+            <input type="datetime-local" id="at-time" />
+
+            <label for="duration">Durée (min)</label>
+            <input type="number" id="duration" min="5" max="480" value="30" />
+
+            <div class="row2">
+              <div>
+                <label for="food">Repas</label>
+                <select id="food">
+                  <option value="yes">Oui</option>
+                  <option value="no" selected>Non</option>
+                </select>
+              </div>
+              <div>
+                <label for="activity">Sport avant</label>
+                <select id="activity">
+                  <option value="yes">Oui</option>
+                  <option value="no" selected>Non</option>
+                </select>
+              </div>
+            </div>
+
+            <label for="notes">Notes</label>
+            <textarea id="notes" placeholder="fatigue, médicaments…"></textarea>
+
+            <label for="photo">Photo étiquette</label>
+            <input type="file" id="photo" accept="image/*" capture="environment" />
+
+            <button type="button" class="primary" id="btn-save-drink">Enregistrer</button>
+            <details class="glitch">
+              <summary>modèle cinétique</summary>
+              <p class="glitch__body">
+                Type de boisson et repas influencent l’absorption (ex. Mitchell et al., 2014). Valeur affichée = estimation,
+                pas mesure biologique.
+              </p>
+            </details>
+          </div>
+        </section>
+
+        <section id="panel-cal" class="panel" role="tabpanel" aria-labelledby="tab-cal">
+          <div class="card">
+            <h2 class="card__title">Calendrier</h2>
+            <div class="cal-nav">
+              <button type="button" id="cal-prev" aria-label="Mois précédent">
+                <svg class="dock__glyph"><use href="#sym-chev-l" /></svg>
+              </button>
+              <p id="cal-title"></p>
+              <button type="button" id="cal-next" aria-label="Mois suivant">
+                <svg class="dock__glyph"><use href="#sym-chev-r" /></svg>
+              </button>
+            </div>
+            <div class="calendar" id="cal-head"></div>
+            <div class="calendar" id="cal-grid"></div>
+          </div>
+          <div class="card">
+            <h2 class="card__title">Jour</h2>
+            <div id="cal-day-detail"></div>
+          </div>
+          <div class="card">
+            <h2 class="card__title">Liste prudence</h2>
+            <label for="block-list">À éviter</label>
+            <textarea id="block-list" placeholder="une entrée par ligne"></textarea>
+            <button type="button" class="secondary" id="btn-save-blocks">Enregistrer</button>
+            <details class="glitch">
+              <summary>à propos du blocage</summary>
+              <p class="glitch__body">Le navigateur ne bloque pas apps ou contacts — liste mémorisée pour rappels dans l’app.</p>
+            </details>
+          </div>
+        </section>
+
+        <section id="panel-prof" class="panel" role="tabpanel" aria-labelledby="tab-prof">
+          <div class="card">
+            <h2 class="card__title">Corps</h2>
+            <label for="sex">Sexe</label>
+            <select id="sex">
+              <option value="male">Homme</option>
+              <option value="female">Femme</option>
+              <option value="other">Autre</option>
+            </select>
+            <div class="row2">
+              <div>
+                <label for="weight">Poids kg</label>
+                <input type="number" id="weight" min="35" max="200" value="75" />
+              </div>
+              <div>
+                <label for="height">Taille cm</label>
+                <input type="number" id="height" min="120" max="220" value="175" />
+              </div>
+            </div>
+            <label for="beta">β élimination (g/L/h)</label>
+            <input type="number" id="beta" min="0.08" max="0.22" step="0.01" value="0.14" />
+            <button type="button" class="secondary" id="btn-export">Export JSON</button>
+            <details class="glitch">
+              <summary>Santé &amp; calendrier</summary>
+              <p class="glitch__body">
+                HealthKit et calendrier natifs ne sont pas exposés aux PWA. Export JSON pour réutilisation ailleurs.
+              </p>
+            </details>
+          </div>
+
+          <div class="card">
+            <h2 class="card__title">Eau</h2>
+            <label class="checkbox-row">
+              <input type="checkbox" id="water-daily" />
+              Rappel quotidien
+            </label>
+            <label for="water-time">Heure</label>
+            <input type="time" id="water-time" value="12:00" />
+            <label class="checkbox-row">
+              <input type="checkbox" id="water-session" />
+              Pendant la session (45 min)
+            </label>
+            <details class="glitch">
+              <summary>OMS — contexte</summary>
+              <p class="glitch__body">
+                Besoins hydriques variables (climat, activité). L’eau n’« annule » pas l’effet de l’alcool sur l’organisme.
+              </p>
+            </details>
+          </div>
+        </section>
+
+        <section id="panel-src" class="panel" role="tabpanel" aria-labelledby="tab-src">
+          <div class="card sources">
+            <h2 class="card__title">Références</h2>
+            <p class="disclaimer" style="margin: 0 0 0.75rem; font-size: 0.82rem">
+              Absorption et pic BAC : type de boisson, jeûne, vidange gastrique (Mitchell et al., 2014).
             </p>
-          </details>
-        </div>
-      </section>
-    </main>
+            <details class="glitch">
+              <summary>liens &amp; études</summary>
+              <div class="glitch__body">
+                <ul class="link-list">
+                  <li>
+                    <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC4112772/" target="_blank" rel="noopener"
+                      >PMC4112772</a
+                    >
+                  </li>
+                  <li>
+                    <a
+                      href="https://pmc.ncbi.nlm.nih.gov/articles/PMC4112772/table/acer12355-tbl-0001/?report=objectonly"
+                      target="_blank"
+                      rel="noopener"
+                      >Table PMC</a
+                    >
+                  </li>
+                  <li><a href="https://doi.org/10.1111/acer.12355" target="_blank" rel="noopener">DOI 10.1111/acer.12355</a></li>
+                </ul>
+              </div>
+            </details>
+          </div>
+        </section>
+      </main>
+
+      <nav class="dock" role="tablist" aria-label="Navigation">
+        <button type="button" role="tab" id="tab-dash" aria-selected="true" data-tab="dash">
+          <svg class="dock__glyph" aria-hidden="true"><use href="#sym-home" /></svg>
+          <span class="dock__label">Accueil</span>
+        </button>
+        <button type="button" role="tab" id="tab-log" aria-selected="false" data-tab="log">
+          <svg class="dock__glyph" aria-hidden="true"><use href="#sym-add" /></svg>
+          <span class="dock__label">Saisie</span>
+        </button>
+        <button type="button" role="tab" id="tab-cal" aria-selected="false" data-tab="cal">
+          <svg class="dock__glyph" aria-hidden="true"><use href="#sym-cal" /></svg>
+          <span class="dock__label">Agenda</span>
+        </button>
+        <button type="button" role="tab" id="tab-prof" aria-selected="false" data-tab="prof">
+          <svg class="dock__glyph" aria-hidden="true"><use href="#sym-user" /></svg>
+          <span class="dock__label">Profil</span>
+        </button>
+        <button type="button" role="tab" id="tab-src" aria-selected="false" data-tab="src">
+          <svg class="dock__glyph" aria-hidden="true"><use href="#sym-lab" /></svg>
+          <span class="dock__label">Sources</span>
+        </button>
+      </nav>
+    </div>
 
     <div id="drunk-overlay" aria-hidden="true">
-      <p style="color: #888; font-size: 0.95rem">Estimation &gt; seuil — mode sécurité</p>
-      <h2>Prenez soin de vous</h2>
-      <p class="disclaimer" style="color: #ccc">
-        Raccourcis utiles. Pour revenir à l’app : fermez cet écran (bouton ci-dessous).
-      </p>
-      <p id="drunk-blocks" class="disclaimer" style="color: #aaa; white-space: pre-wrap; max-height: 30vh; overflow: auto"></p>
+      <p class="drunk-badge">// seuil dépassé</p>
+      <h2>Mode sécurité</h2>
+      <p id="drunk-blocks" class="disclaimer" style="color: #9aa5a6; white-space: pre-wrap; max-height: 30vh; overflow: auto"></p>
       <div class="drunk-actions">
-        <a class="tel" href="tel:" id="drunk-tel">Téléphone</a>
-        <a class="maps" href="https://maps.apple.com/" target="_blank" rel="noopener">Plans / Maps</a>
+        <a class="tel" href="tel:" id="drunk-tel">Appeler</a>
+        <a class="maps" href="https://maps.apple.com/" target="_blank" rel="noopener">Plans</a>
         <a class="uber" href="https://m.uber.com/" target="_blank" rel="noopener">Uber</a>
-        <button type="button" class="secondary" id="drunk-close" style="color: #fff; border-color: #555">
-          Fermer le mode sécurité
+        <button type="button" class="secondary" id="drunk-close" style="color: #fff; border-color: #444; margin-top: 0.25rem">
+          Fermer
         </button>
       </div>
     </div>

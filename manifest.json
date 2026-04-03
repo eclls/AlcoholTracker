@@ -4,8 +4,8 @@
   "description": "Suivi de consommation d'alcool et estimation théorique — outil d'aide, pas un alcootest.",
   "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#0f1419",
-  "theme_color": "#1a5f4a",
+  "background_color": "#0a0d0f",
+  "theme_color": "#145a42",
   "orientation": "portrait-primary",
   "icons": [
     {

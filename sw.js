@@ -1,4 +1,4 @@
-const CACHE = 'alcool-tracker-v2';
+const CACHE = 'alcool-tracker-v3';
 const ASSETS = [
   './',
   './index.html',
