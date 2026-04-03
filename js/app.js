@@ -17,7 +17,9 @@ const defaultState = () => ({
   },
   water: {
     daily: false,
-    time: '12:00',
+    remindersPerDay: 3,
+    windowStart: '08:00',
+    windowEnd: '22:00',
     session: false
   },
   drinks: [],
@@ -25,7 +27,8 @@ const defaultState = () => ({
   lastNotifiedLegal: 0,
   lastNotifiedDrunk: 0,
   lastWaterSession: 0,
-  lastWaterDaily: 0
+  /** @type {Record<string, string>} clé `daily-0`… → date ISO jour `YYYY-MM-DD` */
+  lastWaterDailyFired: {}
 });
 
 function loadState() {
@@ -33,7 +36,16 @@ function loadState() {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return defaultState();
     const parsed = JSON.parse(raw);
-    return { ...defaultState(), ...parsed, drinks: parsed.drinks || [] };
+    const base = defaultState();
+    const merged = { ...base, ...parsed, drinks: parsed.drinks || [] };
+    merged.water = { ...base.water, ...(parsed.water || {}) };
+    if (parsed.water?.time && !parsed.water?.windowStart) {
+      merged.water.windowStart = '08:00';
+      merged.water.windowEnd = '22:00';
+      merged.water.remindersPerDay = 1;
+    }
+    merged.lastWaterDailyFired = { ...(base.lastWaterDailyFired || {}), ...(parsed.lastWaterDailyFired || {}) };
+    return merged;
   } catch {
     return defaultState();
   }
@@ -62,6 +74,7 @@ function setTab(id) {
   document.querySelectorAll('main section.panel').forEach((p) => {
     p.classList.toggle('active', p.id === `panel-${id}`);
   });
+  if (id === 'dash') refreshDash();
 }
 
 document.querySelectorAll('nav.dock button[data-tab]').forEach((btn) => {
@@ -117,9 +130,12 @@ function profileToForm() {
   el('threshold-legal').value = state.thresholds.legal;
   el('threshold-drunk').value = state.thresholds.drunk;
   el('water-daily').checked = !!state.water.daily;
-  el('water-time').value = state.water.time || '12:00';
+  el('water-reminders-count').value = state.water.remindersPerDay ?? 3;
+  el('water-window-start').value = state.water.windowStart || '08:00';
+  el('water-window-end').value = state.water.windowEnd || '22:00';
   el('water-session').checked = !!state.water.session;
   el('block-list').value = state.blockList || '';
+  updateWaterScheduleSummary();
 }
 
 function formToProfile() {
@@ -130,20 +146,115 @@ function formToProfile() {
   state.thresholds.legal = Number(el('threshold-legal').value) || legalLimitGL();
   state.thresholds.drunk = Number(el('threshold-drunk').value) || 0.8;
   state.water.daily = el('water-daily').checked;
-  state.water.time = el('water-time').value;
+  state.water.remindersPerDay = Math.max(1, Math.min(8, Number(el('water-reminders-count').value) || 3));
+  state.water.windowStart = el('water-window-start').value;
+  state.water.windowEnd = el('water-window-end').value;
   state.water.session = el('water-session').checked;
   state.blockList = el('block-list').value;
   saveState(state);
 }
 
-['sex', 'weight', 'height', 'beta', 'threshold-legal', 'threshold-drunk', 'water-daily', 'water-time', 'water-session'].forEach(
+function parseTimeToMinutes(s) {
+  const [h, m] = (s || '0:0').split(':').map(Number);
+  return h * 60 + m;
+}
+
+function minutesToLabel(mins) {
+  const m = ((mins % 1440) + 1440) % 1440;
+  const h = Math.floor(m / 60);
+  const mi = m % 60;
+  return `${String(h).padStart(2, '0')}:${String(mi).padStart(2, '0')}`;
+}
+
+function computeWaterReminderSlotsMinutes(n, windowStart, windowEnd) {
+  const start = parseTimeToMinutes(windowStart);
+  const end = parseTimeToMinutes(windowEnd);
+  let w = end - start;
+  if (w <= 0) w += 1440;
+  const slots = [];
+  for (let i = 0; i < n; i++) {
+    const t = start + ((i + 1) * w) / (n + 1);
+    slots.push(Math.floor(t) % 1440);
+  }
+  return slots;
+}
+
+function updateWaterScheduleSummary() {
+  const box = el('water-schedule-summary');
+  if (!box) return;
+  const n = Math.max(1, Math.min(8, Number(el('water-reminders-count')?.value) || 3));
+  const ws = el('water-window-start')?.value || '08:00';
+  const we = el('water-window-end')?.value || '22:00';
+  const slots = computeWaterReminderSlotsMinutes(n, ws, we);
+  const labels = slots.map(minutesToLabel).join(', ');
+  box.textContent = `${n} rappel${n > 1 ? 's' : ''} par jour entre ${ws} et ${we} — créneaux indicatifs : ${labels}. Les notifications ne sont envoyées que si l’autorisation est accordée (voir ci-dessus).`;
+}
+
+function refreshNotifStatus() {
+  const msgDash = el('notif-status');
+  const detail = el('notif-profile-detail');
+  const badgeEl = el('notif-permission-badge');
+
+  let msg = '';
+  let badge = '…';
+
+  if (typeof Notification === 'undefined') {
+    msg = 'Les notifications ne sont pas disponibles dans ce navigateur.';
+    badge = 'Non supporté';
+  } else if (Notification.permission === 'granted') {
+    msg =
+      'Notifications autorisées : alerte seuil légal (g/L), rappels eau sur la plage horaire définie, rappel session (45 min) si consommation en cours.';
+    badge = 'Autorisées';
+  } else if (Notification.permission === 'denied') {
+    msg =
+      'Notifications refusées. Sur iPhone : Réglages → Safari → Notifications du site, ou Réglages de l’app si installée sur l’écran d’accueil.';
+    badge = 'Refusées';
+  } else {
+    msg = 'Notifications pas encore demandées. Touchez « Autoriser » (en-tête ou ci-dessous).';
+    badge = 'En attente';
+  }
+
+  if (msgDash) msgDash.textContent = msg;
+  if (detail) detail.textContent = msg;
+  if (badgeEl) {
+    badgeEl.textContent = `État : ${badge}`;
+    badgeEl.className =
+      'rounded-full border px-3 py-1 text-xs font-semibold ' +
+      (typeof Notification !== 'undefined' && Notification.permission === 'granted'
+        ? 'border-secondary/40 text-secondary'
+        : typeof Notification !== 'undefined' && Notification.permission === 'denied'
+          ? 'border-error/40 text-error'
+          : 'border-outline-variant/40 text-on-surface-variant');
+  }
+}
+
+async function requestNotificationPermission() {
+  if (!('Notification' in window)) {
+    const msg = 'Notifications non supportées sur ce navigateur.';
+    if (el('notif-status')) el('notif-status').textContent = msg;
+    if (el('notif-profile-detail')) el('notif-profile-detail').textContent = msg;
+    refreshNotifStatus();
+    return;
+  }
+  await Notification.requestPermission();
+  refreshNotifStatus();
+}
+
+['sex', 'weight', 'height', 'beta', 'threshold-legal', 'threshold-drunk', 'water-daily', 'water-reminders-count', 'water-window-start', 'water-window-end', 'water-session'].forEach(
   (id) => {
     el(id).addEventListener('change', () => {
       formToProfile();
+      updateWaterScheduleSummary();
       refreshDash();
     });
   }
 );
+
+['water-reminders-count', 'water-window-start', 'water-window-end'].forEach((id) => {
+  el(id).addEventListener('input', () => {
+    updateWaterScheduleSummary();
+  });
+});
 
 el('block-list').addEventListener('change', formToProfile);
 el('btn-save-blocks').addEventListener('click', () => {
@@ -244,8 +355,14 @@ function refreshDash() {
 
   const ring = el('bac-ring');
   if (ring) {
-    const pct = Math.min(1, bac / 1.2);
-    ring.setAttribute('stroke-dashoffset', String(BAC_RING_C * (1 - pct)));
+    const r = parseFloat(ring.getAttribute('r')) || 132;
+    const len = 2 * Math.PI * r;
+    const pct = Math.min(1, Math.max(0, bac / 1.2));
+    const offset = len * (1 - pct);
+    ring.style.strokeDasharray = String(len);
+    ring.style.strokeDashoffset = String(offset);
+    ring.setAttribute('stroke-dasharray', String(len));
+    ring.setAttribute('stroke-dashoffset', String(offset));
   }
 
   setDashSafeUI(bac, state.thresholds.legal, state.thresholds.drunk);
@@ -337,12 +454,24 @@ function notifyCheck(bac) {
 
 function waterDailyCheck() {
   if (!state.water.daily || typeof Notification === 'undefined' || Notification.permission !== 'granted') return;
-  const [h, m] = (state.water.time || '12:00').split(':').map(Number);
+  const n = Math.max(1, Math.min(8, Number(state.water.remindersPerDay) || 3));
+  const slots = computeWaterReminderSlotsMinutes(n, state.water.windowStart || '08:00', state.water.windowEnd || '22:00');
   const now = new Date();
-  if (now.getHours() === h && now.getMinutes() === m && Date.now() - (state.lastWaterDaily || 0) > 60000) {
-    state.lastWaterDaily = Date.now();
+  const nowMin = now.getHours() * 60 + now.getMinutes();
+  const today = todayIso();
+  if (!state.lastWaterDailyFired) state.lastWaterDailyFired = {};
+
+  for (let i = 0; i < slots.length; i++) {
+    if (Math.abs(nowMin - slots[i]) > 1) continue;
+    const slotKey = `daily-${i}`;
+    if (state.lastWaterDailyFired[slotKey] === today) continue;
+    state.lastWaterDailyFired[slotKey] = today;
     saveState(state);
-    new Notification('Hydratation', { body: 'Pensez à boire de l’eau.', tag: 'water-daily' });
+    new Notification('Aura', {
+      body: `Hydratation — rappel ${i + 1}/${n} (vers ${minutesToLabel(slots[i])}).`,
+      tag: `water-daily-${i}`
+    });
+    break;
   }
 }
 
@@ -357,17 +486,9 @@ function waterSessionCheck(bac) {
   }
 }
 
-el('btn-notif').addEventListener('click', async () => {
-  if (!('Notification' in window)) {
-    el('notif-status').textContent = 'Notifications non supportées sur ce navigateur.';
-    return;
-  }
-  const p = await Notification.requestPermission();
-  el('notif-status').textContent =
-    p === 'granted'
-      ? 'Activées. Sur iOS, garder l’app ouverte améliore la fiabilité des rappels.'
-      : 'Refusé.';
-});
+el('btn-notif').addEventListener('click', () => requestNotificationPermission());
+const btnNotifProf = el('btn-notif-profile');
+if (btnNotifProf) btnNotifProf.addEventListener('click', () => requestNotificationPermission());
 
 function tick() {
   waterDailyCheck();
@@ -376,7 +497,10 @@ function tick() {
 
 setInterval(tick, 30000);
 document.addEventListener('visibilitychange', () => {
-  if (!document.hidden) refreshDash();
+  if (!document.hidden) {
+    refreshNotifStatus();
+    refreshDash();
+  }
 });
 
 /** Enregistrer une boisson */
@@ -564,17 +688,6 @@ el('cal-next').addEventListener('click', () => {
   renderCalendar();
 });
 
-el('btn-export').addEventListener('click', () => {
-  formToProfile();
-  const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = `alcool-tracker-export-${new Date().toISOString().slice(0, 10)}.json`;
-  a.click();
-  URL.revokeObjectURL(a.href);
-  showToast('Export téléchargé.');
-});
-
 /** Service worker */
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('./sw.js').catch(() => {});
@@ -582,7 +695,6 @@ if ('serviceWorker' in navigator) {
 
 profileToForm();
 highlightBeverageCat();
-refreshDash();
+refreshNotifStatus();
 renderCalendar();
-
 setTab('dash');

@@ -104,18 +104,40 @@
     </svg>
 
     <header
-      class="fixed top-0 z-50 flex w-full items-center justify-between bg-neutral-950/60 px-6 py-4 backdrop-blur-xl"
+      class="app-header-safe fixed top-0 z-50 flex w-full items-center justify-between bg-neutral-950/60 px-6 backdrop-blur-xl"
     >
       <div class="flex items-center gap-3">
         <div
-          class="h-10 w-10 overflow-hidden rounded-full border border-outline-variant/20 bg-primary-container"
+          class="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-secondary/30 bg-primary-container/40"
           aria-hidden="true"
         >
-          <img
-            class="h-full w-full object-cover opacity-90"
-            src="https://lh3.googleusercontent.com/aida-public/AB6AXuB7yA0K6ki7R-dUQWJnYrsBZU3qk3WA8H7I6ZD0C6WkFepOI15crqfSD-t9JptLYhOqvUUxHYfN_n2-aAe9Ek3DicLRH9YB1sjCXA_ppLTZu8Wk-YC_O1d4XrL5FN-w8Qu5T53sNNiSTIaTCHgF-43cxPb7UU_BJCFwmw39TkHO93fC-b-T__2b_NX_ITHJ_Nv4IZTN6gC0alaqN4vBLaPiT1y4aX6mY1z-IQbthv5OHUeqPGAhyHq9LettHcmafGVKwLKsF2NODpo"
-            alt=""
-          />
+          <!-- Illustration « saine » : équilibre eau + vitalité -->
+          <svg class="h-9 w-9" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <defs>
+              <linearGradient id="auraLogoGrad" x1="6" y1="4" x2="34" y2="36" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#66d9cc" />
+                <stop offset="0.55" stop-color="#84f5e8" />
+                <stop offset="1" stop-color="#bac3ff" />
+              </linearGradient>
+              <linearGradient id="auraDropGrad" x1="20" y1="8" x2="20" y2="30" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#84f5e8" />
+                <stop offset="1" stop-color="#66d9cc" />
+              </linearGradient>
+            </defs>
+            <circle cx="20" cy="20" r="17" stroke="url(#auraLogoGrad)" stroke-width="1.25" fill="rgba(7,33,137,0.25)" />
+            <path
+              d="M20 9.5c-1.2 1.8-5.2 7.4-5.2 12.6 0 3.4 2.3 6.1 5.2 6.1s5.2-2.7 5.2-6.1c0-5.2-4-10.8-5.2-12.6z"
+              fill="url(#auraDropGrad)"
+              opacity="0.95"
+            />
+            <ellipse cx="17.2" cy="17" rx="1.2" ry="1.6" fill="white" opacity="0.35" />
+            <path
+              d="M25.5 11.2c.6 1.1.4 2.4-.4 3.1-.2-.7-.7-1.4-1.4-2.2-.4-.5-.8-.9-1.2-1.2.8.1 1.8.1 3 .3z"
+              fill="#bac3ff"
+              opacity="0.85"
+            />
+            <path d="M11 26.5c2.2 3.2 5.4 5 9 5s6.8-1.8 9-5" stroke="url(#auraLogoGrad)" stroke-width="1.2" stroke-linecap="round" opacity="0.6" />
+          </svg>
         </div>
         <span class="font-headline text-lg font-extrabold tracking-tighter text-indigo-200">Aura</span>
       </div>
@@ -131,7 +153,7 @@
       </div>
     </header>
 
-    <main class="mx-auto max-w-2xl px-6 pb-36 pt-24">
+    <main class="mx-auto max-w-2xl px-6 pb-36 pt-[calc(5.75rem+env(safe-area-inset-top,0px))]">
       <!-- Tableau de bord -->
       <section id="panel-dash" class="panel active aurora-glow" role="tabpanel" aria-labelledby="tab-dash">
         <div class="flex flex-col items-center justify-center py-8">
@@ -149,14 +171,12 @@
               />
               <circle
                 id="bac-ring"
-                class="text-secondary-fixed-dim drop-shadow-[0_0_12px_rgba(102,217,204,0.35)]"
+                class="bac-ring-progress text-secondary-fixed-dim"
                 cx="144"
                 cy="144"
                 fill="transparent"
                 r="132"
                 stroke="currentColor"
-                stroke-dasharray="829.38"
-                stroke-dashoffset="829.38"
                 stroke-linecap="round"
                 stroke-width="12"
               />
@@ -281,7 +301,13 @@
               class="mt-2 w-full rounded-lg border-0 bg-surface-container-high py-3 text-on-surface ring-1 ring-outline-variant/20 focus:ring-2 focus:ring-primary/30"
             />
           </div>
-          <p id="notif-status" class="text-xs text-on-surface-variant"></p>
+          <div class="rounded-lg border border-outline-variant/15 bg-surface-container-lowest/50 p-4">
+            <p class="font-label text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">Notifications</p>
+            <p id="notif-status" class="mt-2 text-xs leading-relaxed text-on-surface-variant"></p>
+            <p class="mt-2 text-[10px] text-outline">
+              Les alertes BAC et hydratation passent par le navigateur (pas par l’app Santé). Activez ci-dessus ou dans Profil.
+            </p>
+          </div>
           <div>
             <label for="threshold-drunk" class="block text-xs font-medium uppercase tracking-wider text-on-surface-variant"
               >Mode sécurité plein écran (g/L)</label
@@ -648,41 +674,99 @@
 
         <section class="space-y-6">
           <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-primary">notifications_active</span>
+            <h3 class="font-headline text-xl font-bold">Notifications</h3>
+          </div>
+          <div class="space-y-4 rounded-xl border border-outline-variant/15 bg-surface-container-low p-6">
+            <div class="flex flex-wrap items-center justify-between gap-3">
+              <span id="notif-permission-badge" class="rounded-full border border-outline-variant/30 px-3 py-1 text-xs font-semibold text-on-surface-variant"
+                >État : …</span
+              >
+              <button
+                type="button"
+                id="btn-notif-profile"
+                class="rounded-full bg-primary px-4 py-2 text-xs font-bold text-on-primary"
+              >
+                Autoriser
+              </button>
+            </div>
+            <p id="notif-profile-detail" class="text-xs leading-relaxed text-on-surface-variant"></p>
+            <ul class="list-inside list-disc space-y-1 text-[11px] text-on-surface-variant/90">
+              <li>Alerte lorsque l’estimation dépasse le seuil légal (g/L)</li>
+              <li>Rappels hydratation selon la plage et le nombre choisis</li>
+              <li>Rappel pendant une session (alcool estimé &gt; 0), toutes les 45 min</li>
+            </ul>
+            <p class="text-[10px] leading-relaxed text-outline">
+              Sur iPhone, les notifications Web sont plus fiables si la page reste ouverte en arrière-plan ou ajoutée à l’écran d’accueil.
+            </p>
+          </div>
+        </section>
+
+        <section class="space-y-6">
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-secondary">favorite</span>
+            <h3 class="font-headline text-xl font-bold">Apple Santé (Santé)</h3>
+          </div>
+          <div class="rounded-xl border border-outline-variant/15 bg-surface-container-low p-6">
+            <p class="text-sm leading-relaxed text-on-surface-variant">
+              Cette application est une <strong class="text-on-surface">PWA web</strong> : elle ne peut pas se connecter à l’app Santé ni à HealthKit. Seule une
+              <strong class="text-on-surface">app native iOS</strong> (Swift) dédiée pourrait synchroniser l’hydratation ou l’activité, avec votre accord dans Réglages.
+            </p>
+            <p class="mt-3 text-xs text-outline">
+              Une app native iOS pourrait à terme proposer export ou synchronisation ; cette version web reste autonome sur l’appareil.
+            </p>
+          </div>
+        </section>
+
+        <section class="space-y-6">
+          <div class="flex items-center gap-2">
             <span class="material-symbols-outlined text-secondary">water_drop</span>
             <h3 class="font-headline text-xl font-bold">Hydratation</h3>
           </div>
           <div class="space-y-4 rounded-xl bg-surface-container-high p-6">
             <label class="flex items-center justify-between gap-4">
-              <span class="font-bold">Rappel quotidien</span>
+              <span class="font-bold">Rappels quotidiens</span>
               <input type="checkbox" id="water-daily" class="h-6 w-6 rounded-md border-0 bg-surface-variant text-primary focus:ring-primary/40" />
             </label>
-            <div>
-              <label for="water-time" class="text-xs uppercase tracking-wider text-on-surface-variant">Heure</label>
-              <input
-                type="time"
-                id="water-time"
-                value="12:00"
-                class="mt-2 w-full rounded-xl border-0 bg-surface-container-lowest py-3 ring-1 ring-outline-variant/15"
-              />
+            <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
+              <div>
+                <label for="water-reminders-count" class="text-xs uppercase tracking-wider text-on-surface-variant">Nombre / jour</label>
+                <input
+                  type="number"
+                  id="water-reminders-count"
+                  min="1"
+                  max="8"
+                  value="3"
+                  class="mt-2 w-full rounded-xl border-0 bg-surface-container-lowest py-3 font-headline font-bold text-primary ring-1 ring-outline-variant/15"
+                />
+              </div>
+              <div>
+                <label for="water-window-start" class="text-xs uppercase tracking-wider text-on-surface-variant">Début</label>
+                <input
+                  type="time"
+                  id="water-window-start"
+                  value="08:00"
+                  class="mt-2 w-full rounded-xl border-0 bg-surface-container-lowest py-3 ring-1 ring-outline-variant/15"
+                />
+              </div>
+              <div>
+                <label for="water-window-end" class="text-xs uppercase tracking-wider text-on-surface-variant">Fin</label>
+                <input
+                  type="time"
+                  id="water-window-end"
+                  value="22:00"
+                  class="mt-2 w-full rounded-xl border-0 bg-surface-container-lowest py-3 ring-1 ring-outline-variant/15"
+                />
+              </div>
             </div>
+            <p id="water-schedule-summary" class="rounded-lg border border-secondary/20 bg-secondary-container/10 px-4 py-3 text-sm text-on-surface-variant"></p>
             <label class="flex items-center justify-between gap-4">
-              <span class="font-bold">Pendant la session (45 min)</span>
+              <span class="font-bold">Pendant la session (toutes les 45 min)</span>
               <input type="checkbox" id="water-session" class="h-6 w-6 rounded-md border-0 bg-surface-variant text-primary focus:ring-primary/40" />
             </label>
           </div>
         </section>
 
-        <button
-          type="button"
-          id="btn-export"
-          class="w-full rounded-xl border border-outline-variant/25 bg-surface-container-high py-4 font-semibold text-on-surface transition-colors hover:bg-surface-bright"
-        >
-          Export JSON
-        </button>
-        <details class="glitch">
-          <summary>Santé &amp; calendrier natifs</summary>
-          <p class="glitch__body">HealthKit et agendas système ne sont pas exposés aux PWA. Utilisez l’export JSON si besoin.</p>
-        </details>
       </section>
 
       <!-- Sources -->
@@ -756,7 +840,9 @@
     >
       <div class="drunk-overlay__glow drunk-overlay__glow--tl" aria-hidden="true"></div>
       <div class="drunk-overlay__glow drunk-overlay__glow--br" aria-hidden="true"></div>
-      <div class="relative z-10 mx-auto flex max-w-lg flex-1 flex-col gap-8 overflow-y-auto px-6 pb-10 pt-8">
+      <div
+        class="relative z-10 mx-auto flex max-w-lg flex-1 flex-col gap-8 overflow-y-auto px-6 pb-10 pt-[max(2rem,env(safe-area-inset-top,0px))]"
+      >
         <div class="flex flex-col items-center text-center">
           <div class="mb-2 inline-flex items-center gap-2 rounded-full border border-tertiary/20 bg-tertiary-container/30 px-4 py-1.5">
             <span class="h-2 w-2 animate-pulse rounded-full bg-tertiary"></span>

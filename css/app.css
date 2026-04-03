@@ -26,6 +26,12 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* Sous la barre d’état / Dynamic Island : logo lisible */
+.app-header-safe {
+  padding-top: max(0.75rem, calc(env(safe-area-inset-top, 0px) + 10px));
+  padding-bottom: 0.75rem;
+}
+
 /* Panels */
 section.panel {
   display: none;
@@ -96,6 +102,11 @@ section.panel.active {
   margin: 0;
   padding-left: 1rem;
   list-style: disc;
+}
+
+/* Anneau BAC (stroke-dashoffset via JS — glow sans filtre sur le même nœud pour éviter bugs SVG) */
+.bac-ring-progress {
+  filter: drop-shadow(0 0 10px rgba(102, 217, 204, 0.45));
 }
 
 /* Tableau de bord */
