@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1"
+    />
+    <meta name="theme-color" content="#1a5f4a" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <title>Alcool Tracker</title>
+    <link rel="manifest" href="manifest.json" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,600;0,9..40,700;1,9..40,400&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/app.css" />
+    <link rel="apple-touch-icon" href="icons/icon-192.png" />
+  </head>
+  <body>
+    <header class="app-header">
+      <h1>Alcool Tracker</h1>
+      <p>Suivi et estimation théorique — outil d’aide, pas un alcootest.</p>
+    </header>
+
+    <nav class="tabs" role="tablist" aria-label="Sections">
+      <button type="button" role="tab" aria-selected="true" data-tab="dash">Accueil</button>
+      <button type="button" role="tab" aria-selected="false" data-tab="log">Enregistrer</button>
+      <button type="button" role="tab" aria-selected="false" data-tab="cal">Calendrier</button>
+      <button type="button" role="tab" aria-selected="false" data-tab="prof">Profil</button>
+      <button type="button" role="tab" aria-selected="false" data-tab="src">Sources</button>
+    </nav>
+
+    <main>
+      <section id="panel-dash" class="panel active" role="tabpanel">
+        <div class="card bac-display">
+          <div id="bac-value" class="bac-value">0,00</div>
+          <div class="bac-unit">g/L (estimé)</div>
+          <div class="meta-row">
+            <span id="meta-peak">Pic estimé —</span>
+            <span id="meta-since">Depuis 1<sup>re</sup> gorgée —</span>
+          </div>
+          <p class="disclaimer" id="bac-disclaimer"></p>
+        </div>
+
+        <div class="card">
+          <h2>Seuils &amp; rappels</h2>
+          <p class="disclaimer">
+            Alerte à <strong id="show-legal">0,5</strong> g/L (réglable) et rappels hydratation si les notifications sont
+            autorisées (iOS 16.4+ pour certaines web apps).
+          </p>
+          <button type="button" class="primary" id="btn-notif">Activer les notifications</button>
+          <p class="disclaimer" id="notif-status"></p>
+        </div>
+
+        <div class="card">
+          <h2>Mode sécurité (écran)</h2>
+          <p class="disclaimer">
+            Lorsque l’estimation dépasse votre seuil « mode sécurité », cet écran affiche téléphone, Plans et Uber.
+            <strong>iOS ne permet pas</strong> à une page web de modifier les favoris du Dock, de bloquer des apps ou des
+            contacts — utilisez Temps d’écran / Concentration sur le téléphone pour le reste.
+          </p>
+          <label for="threshold-drunk">Seuil personnel (g/L)</label>
+          <input type="number" id="threshold-drunk" min="0.2" max="3" step="0.05" value="0.8" />
+          <label for="threshold-legal">Seuil d’alerte légal / perso (g/L)</label>
+          <input type="number" id="threshold-legal" min="0.1" max="2" step="0.05" value="0.5" />
+        </div>
+      </section>
+
+      <section id="panel-log" class="panel" role="tabpanel">
+        <div class="card">
+          <h2>Nouvelle consommation</h2>
+          <label for="drink-label">Libellé (ex. bière blonde)</label>
+          <input type="text" id="drink-label" placeholder="Optionnel" autocomplete="off" />
+
+          <div class="row2">
+            <div>
+              <label for="volume">Volume (ml)</label>
+              <input type="number" id="volume" min="1" max="2000" value="250" />
+            </div>
+            <div>
+              <label for="abv">Titre alcoométrique (% vol.)</label>
+              <input type="number" id="abv" min="0" max="100" step="0.1" value="5" />
+            </div>
+          </div>
+
+          <label for="beverage">Type de boisson (modèle cinétique)</label>
+          <select id="beverage">
+            <option value="beer">Bière</option>
+            <option value="wine">Vin</option>
+            <option value="spirits">Spiritueux / fort</option>
+            <option value="cocktail">Cocktail</option>
+            <option value="other">Autre</option>
+          </select>
+
+          <label for="at-time">Heure de début</label>
+          <input type="datetime-local" id="at-time" />
+
+          <label for="duration">Durée de consommation (min)</label>
+          <input type="number" id="duration" min="5" max="480" value="30" />
+
+          <div class="row2">
+            <div>
+              <label for="food">Repas avant / pendant</label>
+              <select id="food">
+                <option value="yes">Oui</option>
+                <option value="no" selected>Non</option>
+              </select>
+            </div>
+            <div>
+              <label for="activity">Activité physique avant</label>
+              <select id="activity">
+                <option value="yes">Oui</option>
+                <option value="no" selected>Non</option>
+              </select>
+            </div>
+          </div>
+
+          <label for="notes">Autres facteurs (fatigue, sommeil, médicaments…)</label>
+          <textarea id="notes" placeholder="Notes privées, non partagées"></textarea>
+
+          <label for="photo">Photo de l’étiquette / référence</label>
+          <input type="file" id="photo" accept="image/*" capture="environment" />
+
+          <button type="button" class="primary" id="btn-save-drink">Enregistrer</button>
+        </div>
+      </section>
+
+      <section id="panel-cal" class="panel" role="tabpanel">
+        <div class="card">
+          <h2>Calendrier</h2>
+          <div class="row2">
+            <button type="button" class="secondary" id="cal-prev">◀ Mois</button>
+            <button type="button" class="secondary" id="cal-next">Mois ▶</button>
+          </div>
+          <p id="cal-title" style="text-align: center; font-weight: 600; margin: 0.5rem 0"></p>
+          <div class="calendar" id="cal-head"></div>
+          <div class="calendar" id="cal-grid"></div>
+        </div>
+        <div class="card">
+          <h2>Journée sélectionnée</h2>
+          <div id="cal-day-detail"></div>
+        </div>
+        <div class="card">
+          <h2>Liste de prudence (rappels)</h2>
+          <p class="disclaimer">Pas de blocage système depuis le navigateur — listes personnelles.</p>
+          <label>Contacts / apps à éviter (une ligne = une entrée)</label>
+          <textarea id="block-list" placeholder="Ex. : @ex&#10;Snapchat"></textarea>
+          <button type="button" class="secondary" id="btn-save-blocks">Enregistrer la liste</button>
+        </div>
+      </section>
+
+      <section id="panel-prof" class="panel" role="tabpanel">
+        <div class="card">
+          <h2>Profil physiologique</h2>
+          <label for="sex">Sexe (coefficient de distribution)</label>
+          <select id="sex">
+            <option value="male">Homme</option>
+            <option value="female">Femme</option>
+            <option value="other">Autre / intersexe</option>
+          </select>
+          <div class="row2">
+            <div>
+              <label for="weight">Poids (kg)</label>
+              <input type="number" id="weight" min="35" max="200" value="75" />
+            </div>
+            <div>
+              <label for="height">Taille (cm)</label>
+              <input type="number" id="height" min="120" max="220" value="175" />
+            </div>
+          </div>
+          <label for="beta">Vitesse d’élimination β (g/L/h)</label>
+          <input type="number" id="beta" min="0.08" max="0.22" step="0.01" value="0.14" />
+          <p class="disclaimer">
+            L’app Santé Apple (HealthKit) et le calendrier natif ne sont pas accessibles directement depuis une PWA. Vous
+            pouvez exporter vos données (JSON) pour les importer ailleurs ou créer un rappel manuel dans Calendrier.
+          </p>
+          <button type="button" class="secondary" id="btn-export">Exporter les données (JSON)</button>
+        </div>
+
+        <div class="card">
+          <h2>Rappels eau (OMS : adaptation selon soif, climat, activité)</h2>
+          <label>
+            <input type="checkbox" id="water-daily" /> Rappel quotidien (eau)
+          </label>
+          <label for="water-time">Heure du rappel</label>
+          <input type="time" id="water-time" value="12:00" />
+          <label>
+            <input type="checkbox" id="water-session" /> Pendant la session d’alcool (toutes les 45 min)
+          </label>
+        </div>
+      </section>
+
+      <section id="panel-src" class="panel" role="tabpanel">
+        <div class="card sources">
+          <h2>Documentation &amp; modèle</h2>
+          <p class="disclaimer">
+            L’absorption d’éthanol dépend de la dose, du <strong>type de boisson</strong>, du <strong>jeûne</strong> et
+            du débit gastrique (Mitchell et al., 2014 : pic plus haut et plus précoce avec spiritueux qu’avec bière à dose
+            d’éthanol fixée). L’estimation intégrée ici reste <strong>scolaire</strong> et ne remplace pas les mesures
+            biologiques.
+          </p>
+          <details>
+            <summary>Études &amp; liens</summary>
+            <ul>
+              <li>
+                <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC4112772/" target="_blank" rel="noopener"
+                  >PMC4112772 — Absorption et pic BAC (bière, vin, spiritueux)</a
+                >
+              </li>
+              <li>
+                <a
+                  href="https://pmc.ncbi.nlm.nih.gov/articles/PMC4112772/table/acer12355-tbl-0001/?report=objectonly"
+                  target="_blank"
+                  rel="noopener"
+                  >Table PMC (même étude)</a
+                >
+              </li>
+              <li>
+                <a href="https://doi.org/10.1111/acer.12355" target="_blank" rel="noopener">DOI 10.1111/acer.12355</a>
+              </li>
+              <li>
+                Autres références à croiser (accès variable selon revue) : effets des boissons sur l’alcoolémie, cinétique
+                (SciDirect, JSAD, etc.) — utiles pour calibrer β et facteurs de population, pas intégrés ligne par ligne
+                dans cette démo.
+              </li>
+            </ul>
+          </details>
+          <details>
+            <summary>OMS — hydratation</summary>
+            <p class="disclaimer">
+              L’OMS recommande l’eau potable sûre selon le contexte ; les besoins varient. Pendant l’alcool, s’hydrater
+              aide à la vigilance mais ne « dégrise » pas mécaniquement.
+            </p>
+          </details>
+        </div>
+      </section>
+    </main>
+
+    <div id="drunk-overlay" aria-hidden="true">
+      <p style="color: #888; font-size: 0.95rem">Estimation &gt; seuil — mode sécurité</p>
+      <h2>Prenez soin de vous</h2>
+      <p class="disclaimer" style="color: #ccc">
+        Raccourcis utiles. Pour revenir à l’app : fermez cet écran (bouton ci-dessous).
+      </p>
+      <p id="drunk-blocks" class="disclaimer" style="color: #aaa; white-space: pre-wrap; max-height: 30vh; overflow: auto"></p>
+      <div class="drunk-actions">
+        <a class="tel" href="tel:" id="drunk-tel">Téléphone</a>
+        <a class="maps" href="https://maps.apple.com/" target="_blank" rel="noopener">Plans / Maps</a>
+        <a class="uber" href="https://m.uber.com/" target="_blank" rel="noopener">Uber</a>
+        <button type="button" class="secondary" id="drunk-close" style="color: #fff; border-color: #555">
+          Fermer le mode sécurité
+        </button>
+      </div>
+    </div>
+
+    <div id="toast" class="toast" role="status"></div>
+
+    <script type="module" src="js/app.js"></script>
+  </body>
+</html>
