@@ -1,7 +1,5 @@
 import { estimateBAC, ethanolGrams, legalLimitGL } from './bac.js';
 
-const BAC_RING_C = 2 * Math.PI * 132;
-
 const STORAGE_KEY = 'alcool-tracker-v1';
 
 const defaultState = () => ({
